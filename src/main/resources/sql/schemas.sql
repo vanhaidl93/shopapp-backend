@@ -100,6 +100,7 @@ CREATE TABLE orders
     status       VARCHAR(20),
     total_money  FLOAT CHECK (total_money >= 0)
 );
+
 ALTER TABLE orders
     ADD COLUMN shipping_method VARCHAR(100);
 ALTER TABLE orders

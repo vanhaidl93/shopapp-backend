@@ -2,36 +2,53 @@ server:
   port: 8080
 
 spring:
+  # regarding to mysql database configurations
   datasource:
-    url: jdbc:mysql://localhost:3306/shopapp?useSSL=false&serverTimeZone=UTC
+    url: jdbc:mysql://localhost:3306/shopapp?useSSL=false&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password:
   jpa:
     hibernate:
       ddl-auto: none
+      # ddl-auto: validate, in production environment.
     show-sql: true
     properties:
       hibernate:
+        # explicitly setting mysql dialect
+        dialect: org.hibernate.dialect.MySQL8Dialect
         format_sql: true
     # Disable the Javax Validation inside Spring Data JPA
     javax:
       persistence:
         validation:
           mode: none
+
+  # Redis, environment variable
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+  # Flyway-mysql, tracking Database migration scripts.
+  flyway:
+    locations: classpath:/db/migration
+    baseline-on-migrate: true
+    baseline-version: 0
+
   # restricting max-size uploaded file
   servlet:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+
   # config message follow Accept-Language ( header)
   messages:
     basename: i18n/messages
     encoding: UTF-8
     default-locale: en
-  # environment Redis
-  redis:
-    host: ${REDIS_HOST:localhost}
-    port: ${REDIS_PORT:6379}
-# api
+
+
+# prefix for api
 api:
   prefix: api/v1
