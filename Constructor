@@ -1,0 +1,11 @@
+[33mcommit 5db8f82a21f34253d9d84dae676fe71f2f396c57[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: vanhaidl93 <vanhaidl93@gmail.com>
+Date:   Tue Jun 3 20:40:23 2025 +0700
+
+    Integrating Flyway, tracking migration script versions
+
+[33mcommit 0fbcc180263c2034f13dc305973ed5046902351b[m
+Author: vanhaidl93 <vanhaidl93@gmail.com>
+Date:   Tue Jun 3 16:40:38 2025 +0700
+
+    Initial Commit

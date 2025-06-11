@@ -1,12 +1,12 @@
 package com.hainguyen.shop.services.impl;
 
+import com.hainguyen.shop.configs.security.JwtTokenUtil;
 import com.hainguyen.shop.dtos.request.UserDto;
 import com.hainguyen.shop.dtos.request.UserRegister;
+import com.hainguyen.shop.dtos.response.UserResponse;
 import com.hainguyen.shop.exceptions.ResourceNotFoundException;
 import com.hainguyen.shop.exceptions.UserAlreadyExistsException;
 import com.hainguyen.shop.mapper.UserMapper;
-import com.hainguyen.shop.dtos.response.UserResponse;
-import com.hainguyen.shop.configs.security.JwtTokenUtil;
 import com.hainguyen.shop.models.Role;
 import com.hainguyen.shop.models.User;
 import com.hainguyen.shop.repositories.RoleRepo;
@@ -16,13 +16,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -68,44 +65,35 @@ public class UserService implements IUserService {
 
     @Override
     public String login(String phoneNumber, String password, Long roleId) {
+
         User existingUser = userRepo.findByPhoneNumber(phoneNumber)
-                .orElseThrow(() -> new BadCredentialsException("Invalid phone number/password"));
+                .orElseThrow(() -> new BadCredentialsException("Invalid input"));
 
         if(!existingUser.isActive()){
             throw new BadCredentialsException("User is locked");
         }
 
-        if (existingUser.getFacebookAccountId() == 0 && existingUser.getGoogleAccountId() == 0) {
-            if (!passwordEncoder.matches(password, existingUser.getPassword())) {
-                throw new BadCredentialsException("Invalid phone number/password");
-            }
-        }
-
-        Optional<Role> optionalRole = roleRepo.findById(roleId);
-        if(optionalRole.isEmpty() || roleId !=existingUser.getRole().getId()) {
-            throw new BadCredentialsException("Invalid roleId");
-        }
-
-        // authenticate through Internal work flow of Spring Security
+        String jwt = "";
         UsernamePasswordAuthenticationToken authenticationToken =
-                UsernamePasswordAuthenticationToken.authenticated(
-                        phoneNumber, password,
-                        List.of(new SimpleGrantedAuthority(existingUser.getRole().getName())));
-        authenticationManager.authenticate(authenticationToken);
+                UsernamePasswordAuthenticationToken.unauthenticated(phoneNumber, password);
+        Authentication authenticationRes = authenticationManager.authenticate(authenticationToken);
 
-        return jwtTokenUtil.generateToken(existingUser);
+        if (authenticationRes != null && authenticationRes.isAuthenticated()) {
+            jwt = jwtTokenUtil.generateToken(authenticationRes,existingUser);
+        }
+
+        return jwt;
     }
 
     @Override
-    public UserResponse getUserByToken(String token) {
-        if(jwtTokenUtil.isTokenExpired(token)) {
-            throw new BadCredentialsException("Invalid token");
+    public User getUserByToken(String token) {
+        if (jwtTokenUtil.isTokenExpired(token)) {
+            throw new BadCredentialsException("Unauthorized");
         }
         String phoneNumber = jwtTokenUtil.extractPhoneNumber(token);
-        User existingUser = userRepo.findByPhoneNumber(phoneNumber)
-                .orElseThrow(() -> new ResourceNotFoundException("User","phoneNumber",phoneNumber));
 
-        return userMapper.mapToUserResponse(existingUser,new UserResponse());
+        return userRepo.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "phoneNumber", phoneNumber));
     }
 
     @Override
@@ -113,9 +101,9 @@ public class UserService implements IUserService {
     public boolean updateUser(Long userId, UserDto userDto) {
 
         User existingUser = userRepo.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User","id",userId.toString()));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId.toString()));
 
-        User saveUpdatedUser= userRepo.save(userMapper.mapToUser(userDto,existingUser));
+        User saveUpdatedUser = userRepo.save(userMapper.mapToUser(userDto, existingUser));
 
         return true;
     }

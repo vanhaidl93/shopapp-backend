@@ -58,13 +58,18 @@ public class ShopProjectSecurityConfig {
                                 config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
                                 config.setAllowedMethods(Collections.singletonList("*"));
                                 config.setAllowCredentials(true);
-                                config.setAllowedHeaders(List.of("Authorization", "Content-Type", "x-auth-token"));
+                                config.setAllowedHeaders(List.of("*"));
                                 config.setMaxAge(3600L);
-                                config.setExposedHeaders(List.of("x-auth-token"));
+                                config.setExposedHeaders(List.of("Authorization"));
                                 return config;
                             }
                         }
                 )
+        );
+
+        http.exceptionHandling(ecf -> ecf
+                .authenticationEntryPoint(customAuthenticationEntryPoint)
+                .accessDeniedHandler(customAccessDeniedHandler)
         );
 
         http.authorizeHttpRequests(req -> req
@@ -80,57 +85,38 @@ public class ShopProjectSecurityConfig {
                         "/swagger-ui/**"
                 ).permitAll()
 
-                .requestMatchers(GET,
-                        String.format("%s/roles**", apiPrefix)).permitAll()
-                .requestMatchers(GET,
-                        String.format("%s/categories**", apiPrefix)).permitAll()
+                .requestMatchers(GET, String.format("%s/users**", apiPrefix)).hasAnyRole(Role.USER)
+                .requestMatchers(PUT, String.format("%s/users**", apiPrefix)).hasAnyRole(Role.USER)
 
-                .requestMatchers(POST,
-                        String.format("%s/categories/**", apiPrefix)).hasAnyRole(Role.ADMIN)
-                .requestMatchers(PUT,
-                        String.format("%s/categories/**", apiPrefix)).hasAnyRole(Role.ADMIN)
-                .requestMatchers(DELETE,
-                        String.format("%s/categories/**", apiPrefix)).hasAnyRole(Role.ADMIN)
+                .requestMatchers(GET, String.format("%s/roles**", apiPrefix)).permitAll()
 
-                .requestMatchers(GET,
-                        String.format("%s/products/**", apiPrefix)).permitAll()
-                .requestMatchers(GET,
-                        String.format("%s/products/images/*", apiPrefix)).permitAll()
-                .requestMatchers(POST,
-                        String.format("%s/products/generateFakeProducts", apiPrefix)).permitAll()
-                .requestMatchers(POST,
-                        String.format("%s/products**", apiPrefix)).hasAnyRole(Role.ADMIN)
-                .requestMatchers(PUT,
-                        String.format("%s/products/**", apiPrefix)).hasAnyRole(Role.ADMIN)
-                .requestMatchers(DELETE,
-                        String.format("%s/products/**", apiPrefix)).hasAnyRole(Role.ADMIN)
+                .requestMatchers(GET, String.format("%s/categories**", apiPrefix)).permitAll()
+                .requestMatchers(POST, String.format("%s/categories/**", apiPrefix)).hasAnyRole(Role.ADMIN)
+                .requestMatchers(PUT, String.format("%s/categories/**", apiPrefix)).hasAnyRole(Role.ADMIN)
+                .requestMatchers(DELETE, String.format("%s/categories/**", apiPrefix)).hasAnyRole(Role.ADMIN)
 
-                .requestMatchers(GET,
-                        String.format("%s/orders/**", apiPrefix)).hasAnyRole(Role.USER)
-                .requestMatchers(GET,
-                        String.format("%s/orders/search-keyword", apiPrefix)).hasRole(Role.ADMIN)
-                .requestMatchers(POST,
-                        String.format("%s/orders/**", apiPrefix)).hasAnyRole(Role.USER)
-                .requestMatchers(PUT,
-                        String.format("%s/orders/**", apiPrefix)).hasRole(Role.ADMIN)
-                .requestMatchers(DELETE,
-                        String.format("%s/orders/**", apiPrefix)).hasRole(Role.ADMIN)
+                .requestMatchers(GET, String.format("%s/products/**", apiPrefix)).permitAll()
+                .requestMatchers(GET, String.format("%s/products/images/*", apiPrefix)).permitAll()
+                .requestMatchers(POST, String.format("%s/products/generateFakeProducts", apiPrefix)).permitAll()
+                .requestMatchers(POST, String.format("%s/products**", apiPrefix)).hasAnyRole(Role.ADMIN)
+                .requestMatchers(PUT, String.format("%s/products/**", apiPrefix)).hasAnyRole(Role.ADMIN)
+                .requestMatchers(DELETE, String.format("%s/products/**", apiPrefix)).hasAnyRole(Role.ADMIN)
 
-                .requestMatchers(GET,
-                        String.format("%s/orderDetails/**", apiPrefix)).hasAnyRole(Role.USER)
-                .requestMatchers(POST,
-                        String.format("%s/orderDetails/**", apiPrefix)).hasAnyRole(Role.USER)
-                .requestMatchers(PUT,
-                        String.format("%s/orderDetails/**", apiPrefix)).hasRole(Role.ADMIN)
-                .requestMatchers(DELETE,
-                        String.format("%s/orderDetails/**", apiPrefix)).hasRole(Role.ADMIN)
+                .requestMatchers(GET, String.format("%s/orders/**", apiPrefix)).hasAnyRole(Role.USER)
+                .requestMatchers(GET, String.format("%s/orders/search-keyword", apiPrefix)).hasRole(Role.ADMIN)
+                .requestMatchers(POST, String.format("%s/orders/**", apiPrefix)).hasAnyRole(Role.USER)
+                .requestMatchers(PUT, String.format("%s/orders/**", apiPrefix)).hasRole(Role.ADMIN)
+                .requestMatchers(DELETE, String.format("%s/orders/**", apiPrefix)).hasRole(Role.ADMIN)
+
+                .requestMatchers(GET, String.format("%s/orderDetails/**", apiPrefix)).hasAnyRole(Role.USER)
+                .requestMatchers(POST, String.format("%s/orderDetails/**", apiPrefix)).hasAnyRole(Role.USER)
+                .requestMatchers(PUT, String.format("%s/orderDetails/**", apiPrefix)).hasRole(Role.ADMIN)
+                .requestMatchers(DELETE, String.format("%s/orderDetails/**", apiPrefix)).hasRole(Role.ADMIN)
 
                 .anyRequest().authenticated()
         );
 
-        http.exceptionHandling(ecf -> ecf
-                .authenticationEntryPoint(customAuthenticationEntryPoint)
-                .accessDeniedHandler(customAccessDeniedHandler));
+
 
         return http.build();
     }

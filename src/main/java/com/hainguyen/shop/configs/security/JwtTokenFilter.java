@@ -1,10 +1,10 @@
 package com.hainguyen.shop.configs.security;
 
+import com.hainguyen.shop.utils.Constants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,28 +36,29 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                                     FilterChain filterChain)
             throws ServletException, IOException {
 
-        // extracting JWT of user input
+        // extracting JWT on request
         try {
             if (isBypassToken(request)) {
                 filterChain.doFilter(request, response);
                 return;
             }
             // extract token from request header "Authorization".
-            final String authHeader = request.getHeader("Authorization");
+            final String authHeader = request.getHeader(Constants.JWT_HEADER);
 
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
                 return;
             }
-            String token = authHeader.substring(7);
 
             // extract phoneNumber and validate token follow signature - secret.
+            String token = authHeader.substring(7);
             String phoneNumber = jwtTokenUtil.extractPhoneNumber(token);
             UserDetails userDetails = userDetailsService.loadUserByUsername(phoneNumber);
 
-            // save SecurityContext if first filter, reuse later if token valid.
+            // save SecurityContext if first filter, to retrieve later.
             if (!jwtTokenUtil.isTokenExpired(token)
                     && SecurityContextHolder.getContext().getAuthentication() == null) {
+
                 UsernamePasswordAuthenticationToken authenticationToken
                         = UsernamePasswordAuthenticationToken.authenticated(
                         userDetails.getUsername(),
@@ -68,7 +69,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
 
-            filterChain.doFilter(request, response); //enable bypass
+            filterChain.doFilter(request, response);
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
         }
@@ -98,7 +99,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             String pathBypass = bypassToken.getFirst();
             String methodBypass = bypassToken.getSecond();
             // Check if the request path and method satisfy the condition.
-            if (requestPath.startsWith(pathBypass.replace("**", ""))
+            if (requestPath.matches(pathBypass.replace("**", ".*"))
                     && requestMethod.equalsIgnoreCase(methodBypass)) {
                 return true;
             }

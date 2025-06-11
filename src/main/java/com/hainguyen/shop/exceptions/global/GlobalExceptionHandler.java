@@ -8,7 +8,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -58,16 +57,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     }
 
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ErrorResponse> handlerBadCredentialsException(
-            BadCredentialsException exception, WebRequest request) {
-        ErrorResponse errorResponseDto = new ErrorResponse(
-                request.getDescription(false),
-                HttpStatus.UNAUTHORIZED,
-                exception.getMessage(),
-                LocalDateTime.now());
-        return new ResponseEntity<>(errorResponseDto, HttpStatus.UNAUTHORIZED);
-    }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handlerUserAlreadyExistsException(
