@@ -22,6 +22,10 @@ public class Token {
     private LocalDateTime expirationDate;
     private boolean revoked;
     private boolean expired;
+
+    private String refreshToken;
+    private LocalDateTime refreshExpirationDate;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;

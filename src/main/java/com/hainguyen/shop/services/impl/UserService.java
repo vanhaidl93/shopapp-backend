@@ -8,8 +8,10 @@ import com.hainguyen.shop.exceptions.ResourceNotFoundException;
 import com.hainguyen.shop.exceptions.UserAlreadyExistsException;
 import com.hainguyen.shop.mapper.UserMapper;
 import com.hainguyen.shop.models.Role;
+import com.hainguyen.shop.models.Token;
 import com.hainguyen.shop.models.User;
 import com.hainguyen.shop.repositories.RoleRepo;
+import com.hainguyen.shop.repositories.TokenRepository;
 import com.hainguyen.shop.repositories.UserRepo;
 import com.hainguyen.shop.services.IUserService;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +34,7 @@ public class UserService implements IUserService {
     private final JwtTokenUtil jwtTokenUtil;
     private final AuthenticationManager authenticationManager;
     private final UserMapper userMapper;
+    private final TokenRepository tokenRepository;
 
 
     @Override
@@ -106,5 +110,14 @@ public class UserService implements IUserService {
         User saveUpdatedUser = userRepo.save(userMapper.mapToUser(userDto, existingUser));
 
         return true;
+    }
+
+    @Override
+    public User getUserByRefreshToken(String refreshToken) {
+        Token existingToken = tokenRepository.findByRefreshToken(refreshToken);
+        if (existingToken == null){
+            throw new ResourceNotFoundException("Token","refreshToken","xxx-xxx-xxx");
+        }
+        return existingToken.getUser();
     }
 }

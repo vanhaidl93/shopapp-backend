@@ -2,14 +2,11 @@ package com.hainguyen.shop.mapper;
 
 import com.hainguyen.shop.dtos.request.UserDto;
 import com.hainguyen.shop.dtos.response.LoginResponse;
+import com.hainguyen.shop.dtos.response.UserResponse;
 import com.hainguyen.shop.models.Token;
 import com.hainguyen.shop.models.User;
-import com.hainguyen.shop.dtos.response.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,7 +17,7 @@ public class UserMapper {
 
     public UserResponse mapToUserResponse(User user,
                                           UserResponse userResponse) {
-        userResponse= modelMapper.map(user, UserResponse.class);
+        userResponse = modelMapper.map(user, UserResponse.class);
         userResponse.setId(user.getId());
 
         return userResponse;
@@ -31,13 +28,14 @@ public class UserMapper {
                 .addMappings(mapper -> mapper.skip(User::setId));
         modelMapper.map(userDto, user);
 
-       return user;
+        return user;
     }
 
-    public LoginResponse toLoginResponse(User user, String localizedMessage, Token token){
-       return LoginResponse.builder()
+    public LoginResponse toLoginResponse(User user, String localizedMessage, Token token) {
+        return LoginResponse.builder()
                 .message(localizedMessage)
                 .token(token.getToken())
+                .refreshToken(token.getRefreshToken())
                 .tokenType(token.getTokenType())
                 .username(user.getPhoneNumber())
                 .role(user.getRole())

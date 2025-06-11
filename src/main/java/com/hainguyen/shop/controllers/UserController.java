@@ -1,5 +1,6 @@
 package com.hainguyen.shop.controllers;
 
+import com.hainguyen.shop.dtos.request.RefreshTokenDto;
 import com.hainguyen.shop.dtos.request.UserRegister;
 import com.hainguyen.shop.dtos.response.UserResponse;
 import com.hainguyen.shop.configs.security.JwtTokenUtil;
@@ -19,6 +20,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -56,6 +59,18 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(userMapper.toLoginResponse(user,
                         localizationUtils.getLocalizedMessage(Constants.LOGIN_SUCCESS),newToken));
+    }
+
+    @PostMapping("/refreshToken")
+    public ResponseEntity<LoginResponse> refreshToken(@Valid @RequestBody RefreshTokenDto refreshTokenDto){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userService.getUserByRefreshToken(refreshTokenDto.getRefreshToken());
+
+        Token newToken = tokenService.refreshToken(refreshTokenDto.getRefreshToken(),user,authentication);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(userMapper.toLoginResponse(user,localizationUtils.getLocalizedMessage(Constants.MESSAGE_200),newToken));
+
     }
 
 

@@ -11,4 +11,6 @@ public interface IUserService {
     User getUserByToken(String token);
 
     boolean updateUser(Long userId, UserDto userDto);
+
+    User getUserByRefreshToken(String refreshToken);
 }

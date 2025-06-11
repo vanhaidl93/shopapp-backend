@@ -76,6 +76,7 @@ public class ShopProjectSecurityConfig {
                 .requestMatchers(
                         String.format("%s/users/register", apiPrefix),
                         String.format("%s/users/login", apiPrefix),
+                        String.format("%s/users/refreshToken", apiPrefix),
                         // show "/error" path that's controlled by spring security.
                         "/error",
                         // generate fake products
