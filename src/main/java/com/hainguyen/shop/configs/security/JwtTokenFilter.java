@@ -1,5 +1,8 @@
 package com.hainguyen.shop.configs.security;
 
+import com.hainguyen.shop.exceptions.ResourceNotFoundException;
+import com.hainguyen.shop.models.User;
+import com.hainguyen.shop.repositories.UserRepo;
 import com.hainguyen.shop.utils.Constants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -27,6 +30,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private final JwtTokenUtil jwtTokenUtil;
     private final UserDetailsService userDetailsService;
+    private final UserRepo userRepo;
 
     @Value("${api.prefix}")
     private String apiPrefix;
@@ -53,17 +57,21 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             // extract phoneNumber and validate token follow signature - secret.
             String token = authHeader.substring(7);
             String phoneNumber = jwtTokenUtil.extractPhoneNumber(token);
-            UserDetails userDetails = userDetailsService.loadUserByUsername(phoneNumber);
+
+            User existingUser = userRepo.findByPhoneNumber(phoneNumber)
+                    .orElseThrow(() -> new ResourceNotFoundException("User","phoneNumber",phoneNumber));
 
             // save SecurityContext if first filter, to retrieve later.
-            if (!jwtTokenUtil.isTokenExpired(token)
+            if (jwtTokenUtil.validateToken(token,existingUser)
                     && SecurityContextHolder.getContext().getAuthentication() == null) {
 
+                UserDetails userDetails = userDetailsService.loadUserByUsername(phoneNumber);
                 UsernamePasswordAuthenticationToken authenticationToken
                         = UsernamePasswordAuthenticationToken.authenticated(
                         userDetails.getUsername(),
                         null,
                         userDetails.getAuthorities());
+
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);

@@ -4,6 +4,7 @@ import com.hainguyen.shop.configs.security.JwtTokenUtil;
 import com.hainguyen.shop.dtos.request.UserDto;
 import com.hainguyen.shop.dtos.request.UserRegister;
 import com.hainguyen.shop.dtos.response.UserResponse;
+import com.hainguyen.shop.dtos.response.UsersResponsePage;
 import com.hainguyen.shop.exceptions.ResourceNotFoundException;
 import com.hainguyen.shop.exceptions.UserAlreadyExistsException;
 import com.hainguyen.shop.mapper.UserMapper;
@@ -15,14 +16,17 @@ import com.hainguyen.shop.repositories.TokenRepository;
 import com.hainguyen.shop.repositories.UserRepo;
 import com.hainguyen.shop.services.IUserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -73,7 +77,7 @@ public class UserService implements IUserService {
         User existingUser = userRepo.findByPhoneNumber(phoneNumber)
                 .orElseThrow(() -> new BadCredentialsException("Invalid input"));
 
-        if(!existingUser.isActive()){
+        if (!existingUser.isActive()) {
             throw new BadCredentialsException("User is locked");
         }
 
@@ -83,7 +87,7 @@ public class UserService implements IUserService {
         Authentication authenticationRes = authenticationManager.authenticate(authenticationToken);
 
         if (authenticationRes != null && authenticationRes.isAuthenticated()) {
-            jwt = jwtTokenUtil.generateToken(authenticationRes,existingUser);
+            jwt = jwtTokenUtil.generateToken(authenticationRes, existingUser);
         }
 
         return jwt;
@@ -113,11 +117,42 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User getUserByRefreshToken(String refreshToken) {
-        Token existingToken = tokenRepository.findByRefreshToken(refreshToken);
-        if (existingToken == null){
-            throw new ResourceNotFoundException("Token","refreshToken","xxx-xxx-xxx");
-        }
-        return existingToken.getUser();
+    public UsersResponsePage getAllUsersPerPageIncludeSearchKeyword(Pageable pageable, String keyword) {
+
+        Page<User> usersPage = userRepo.getAllUsersPerPageIncludeSearchKeyword(keyword, pageable);
+        List<UserResponse> userResponses = usersPage.getContent().stream()
+                .map(user -> userMapper.mapToUserResponse(user, new UserResponse()))
+                .toList();
+
+        return UsersResponsePage.builder()
+                .currentPage(pageable.getPageNumber() + 1)
+                .totalPages(usersPage.getTotalPages())
+                .userResponses(userResponses)
+                .build();
     }
+
+    @Override
+    @Transactional
+    public void resetPassword(Long userId, String newPassword) {
+        User existingUser = userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Use", "userId", userId.toString()));
+
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        existingUser.setPassword(encodedPassword);
+
+        //reset password and clear old token.
+        List<Token> tokens = tokenRepository.findByUser(existingUser);
+        for (Token token : tokens) {
+            tokenRepository.delete(token);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void blockOrEnableUser(Long userId, boolean active) {
+        User existingUser = userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Use", "userId", userId.toString()));
+        existingUser.setActive(active);
+    }
+
 }

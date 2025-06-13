@@ -42,17 +42,16 @@ public class ProductController {
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
     @PostMapping()
-    public ResponseEntity<SuccessResponse> createProduct(@Valid @RequestBody ProductDto productDto) {
+    public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductDto productDto) {
 
-        productService.createProduct(productDto);
+        ProductResponse productResponse = productService.createProduct(productDto);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new SuccessResponse(Constants.STATUS_201,
-                        localizationUtils.getLocalizedMessage(Constants.MESSAGE_201)));
+                .body(productResponse);
     }
 
     @PostMapping(value = "uploads/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> UploadImages(@RequestParam("files") List<MultipartFile> files,
-                                          @PathVariable Long productId) throws IOException {
+    public ResponseEntity<SuccessResponse> UploadImages(@RequestParam("files") List<MultipartFile> files,
+                                                        @PathVariable Long productId) throws IOException {
 
         productService.uploadProductImage(files, productId);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -93,8 +92,8 @@ public class ProductController {
 
         ProductsResponsePage productsPerPage = productRedisService.getProductsPerPage(pageRequest);
         if (productsPerPage == null) {
-            productsPerPage = productService.getAllProducts(pageRequest,pageNumber,keyword, categoryId);
-            productRedisService.saveProductsPerPage(productsPerPage,pageRequest);
+            productsPerPage = productService.getAllProducts(pageRequest, pageNumber, keyword, categoryId);
+            productRedisService.saveProductsPerPage(productsPerPage, pageRequest);
         }
 
         return ResponseEntity.ok().body(productsPerPage);

@@ -16,12 +16,14 @@ import com.hainguyen.shop.dtos.response.ProductsResponsePage;
 import com.hainguyen.shop.services.IProductRedisService;
 import com.hainguyen.shop.services.IProductService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,8 +42,10 @@ public class ProductService implements IProductService {
     private final ProductMapper productMapper;
     private final IProductRedisService productRedisService;
 
+    private static String FOLDER_UPLOADS = "uploads";
+
     @Override
-    public void createProduct(ProductDto productDto) {
+    public ProductResponse createProduct(ProductDto productDto) {
         Category existingCategory = categoryRepo.findById(productDto.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "id", productDto.getCategoryId().toString()));
         Product newProduct = Product.builder()
@@ -52,7 +56,9 @@ public class ProductService implements IProductService {
                 .category(existingCategory).
                 build();
 
-        productRepo.save(newProduct);
+        Product savedProduct = productRepo.save(newProduct);
+
+        return productMapper.mapToProductResponse(savedProduct,new ProductResponse());
     }
 
     @Override
@@ -72,8 +78,8 @@ public class ProductService implements IProductService {
 
         List<ProductResponse> productResponsesPerPage =
                 productPages.getContent().stream()
-                .map(product -> productMapper.mapToProductResponse(product, new ProductResponse()))
-                .toList();
+                        .map(product -> productMapper.mapToProductResponse(product, new ProductResponse()))
+                        .toList();
         ;
 
         return new ProductsResponsePage(productResponsesPerPage, pageNumber, totalPages);
@@ -143,6 +149,21 @@ public class ProductService implements IProductService {
         }
     }
 
+    @Override
+    public void deleteFile(String filename) {
+
+        Path filePath = Paths.get(FOLDER_UPLOADS).resolve(filename);
+        try {
+            if (Files.exists(filePath)) {
+                Files.delete(filePath);
+            } else {
+                throw new FileNotFoundException("File not found: " + filename);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     // save only 5 files into product_images by productId
     private void createProductImage(String uploadUniqueFileName, Long productId) {
 
@@ -169,7 +190,7 @@ public class ProductService implements IProductService {
         // create unique fileName ( add UUID random), avoid to overwrite.
         String uniqueFileName = UUID.randomUUID() + "_" + fileName;
         // create uploads folder at current working directory
-        Path uploadDir = Paths.get("uploads");
+        Path uploadDir = Paths.get(FOLDER_UPLOADS);
         if (!Files.exists(uploadDir)) {
             Files.createDirectory(uploadDir);
         }

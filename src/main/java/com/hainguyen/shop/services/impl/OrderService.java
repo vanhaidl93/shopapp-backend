@@ -42,12 +42,17 @@ public class OrderService implements IOrderService {
         newOrder.setActive(true);
         newOrder.setShippingAddress(orderDto.getShippingAddress());
         newOrder.setAddress(existingUser.getAddress());
+        // save order (without orderDetails)
         Order savedOrder = orderRepo.save(newOrder);
 
-        // Map CartItemsDto to OrderDetail
-        List<OrderDetail> orderDetails = orderMapper.cartItemsMapToOrderDetail(orderDto.getCartItems(),savedOrder);
+        // Map CartItemsDto to OrderDetail and save database (include Order)
+        List<OrderDetail> orderDetails =
+                    orderMapper.cartItemsMapToOrderDetail(orderDto.getCartItems(),savedOrder);
 
         List<OrderDetail> savedOrderDetails = orderDetailRepo.saveAll(orderDetails);
+
+
+        savedOrder.setOrderDetails(savedOrderDetails);
 
         return orderMapper.mapToOrderResponse(savedOrder,new OrderResponse());
     }

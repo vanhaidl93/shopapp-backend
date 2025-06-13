@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 
 @Component
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
+
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response,
                        AccessDeniedException accessDeniedException)
@@ -37,6 +38,5 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
                         currentTimeStamp, HttpStatus.FORBIDDEN.value(),HttpStatus.FORBIDDEN.getReasonPhrase(),
                         message,path);
         response.getWriter().write(jsonResponse);
-
     }
 }

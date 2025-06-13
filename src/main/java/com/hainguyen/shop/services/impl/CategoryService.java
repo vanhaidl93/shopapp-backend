@@ -8,6 +8,8 @@ import com.hainguyen.shop.dtos.response.CategoryResponse;
 import com.hainguyen.shop.services.ICategoryService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,12 +31,15 @@ public class CategoryService implements ICategoryService {
     }
 
     @Override
-    public List<CategoryResponse> getAllCategories() {
+    public List<CategoryResponse> getCategoriesPerPage(Pageable pageable) {
+        Page<Category> categoriesPage = categoryRepo.findAll(pageable);
+        List<Category> categories = categoriesPage.getContent();
 
-        return  categoryRepo.findAll().stream()
-                .map(category -> modelMapper.map(category,CategoryResponse.class))
+        return categories.stream()
+                .map(category ->modelMapper.map(category,CategoryResponse.class))
                 .toList();
     }
+
 
     @Override
     @Transactional

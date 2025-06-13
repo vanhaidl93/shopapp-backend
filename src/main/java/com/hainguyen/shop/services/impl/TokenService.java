@@ -66,8 +66,9 @@ public class TokenService implements ITokenService {
 
     @Override
     @Transactional
-    public Token refreshToken(String refreshToken, User user, Authentication authentication) {
+    public Token refreshToken(String refreshToken, Authentication authentication) {
         Token existingToken = tokenRepository.findByRefreshToken(refreshToken);
+
         if (existingToken == null) {
             throw new ResourceNotFoundException("Token", "refreshToken", "xxx-xxx-xxx");
         }
@@ -77,7 +78,7 @@ public class TokenService implements ITokenService {
             throw new BadCredentialsException("Refresh token is expired");
         }
 
-        String newToken = jwtTokenUtil.generateToken(authentication, user);
+        String newToken = jwtTokenUtil.generateToken(authentication, existingToken.getUser());
         existingToken.setExpirationDate(LocalDateTime.now().plusSeconds(jwtExpiration));
         existingToken.setToken(newToken);
         existingToken.setRefreshToken(UUID.randomUUID().toString());

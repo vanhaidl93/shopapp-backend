@@ -12,7 +12,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.authentication.password.CompromisedPasswordChecker;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -31,6 +34,7 @@ import static org.springframework.http.HttpMethod.*;
 
 @Configuration
 @RequiredArgsConstructor
+@EnableWebSecurity
 public class ShopProjectSecurityConfig {
 
     private final JwtTokenFilter jwtTokenFilter;
@@ -67,17 +71,12 @@ public class ShopProjectSecurityConfig {
                 )
         );
 
-        http.exceptionHandling(ecf -> ecf
-                .authenticationEntryPoint(customAuthenticationEntryPoint)
-                .accessDeniedHandler(customAccessDeniedHandler)
-        );
 
         http.authorizeHttpRequests(req -> req
                 .requestMatchers(
                         String.format("%s/users/register", apiPrefix),
                         String.format("%s/users/login", apiPrefix),
-                        String.format("%s/users/refreshToken", apiPrefix),
-                        // show "/error" path that's controlled by spring security.
+                        // enable "/error"
                         "/error",
                         // generate fake products
                         String.format("%s/products/generateFakeProducts", apiPrefix),
@@ -85,9 +84,6 @@ public class ShopProjectSecurityConfig {
                         "/v3/api-docs/**",
                         "/swagger-ui/**"
                 ).permitAll()
-
-                .requestMatchers(GET, String.format("%s/users**", apiPrefix)).hasAnyRole(Role.USER)
-                .requestMatchers(PUT, String.format("%s/users**", apiPrefix)).hasAnyRole(Role.USER)
 
                 .requestMatchers(GET, String.format("%s/roles**", apiPrefix)).permitAll()
 
@@ -103,9 +99,11 @@ public class ShopProjectSecurityConfig {
                 .requestMatchers(PUT, String.format("%s/products/**", apiPrefix)).hasAnyRole(Role.ADMIN)
                 .requestMatchers(DELETE, String.format("%s/products/**", apiPrefix)).hasAnyRole(Role.ADMIN)
 
+                .requestMatchers(DELETE, String.format("%s/productImages/**", apiPrefix)).hasRole(Role.ADMIN)
+
                 .requestMatchers(GET, String.format("%s/orders/**", apiPrefix)).hasAnyRole(Role.USER)
                 .requestMatchers(GET, String.format("%s/orders/search-keyword", apiPrefix)).hasRole(Role.ADMIN)
-                .requestMatchers(POST, String.format("%s/orders/**", apiPrefix)).hasAnyRole(Role.USER)
+                .requestMatchers(POST, String.format("%s/orders", apiPrefix)).hasAnyRole(Role.USER)
                 .requestMatchers(PUT, String.format("%s/orders/**", apiPrefix)).hasRole(Role.ADMIN)
                 .requestMatchers(DELETE, String.format("%s/orders/**", apiPrefix)).hasRole(Role.ADMIN)
 
@@ -114,10 +112,14 @@ public class ShopProjectSecurityConfig {
                 .requestMatchers(PUT, String.format("%s/orderDetails/**", apiPrefix)).hasRole(Role.ADMIN)
                 .requestMatchers(DELETE, String.format("%s/orderDetails/**", apiPrefix)).hasRole(Role.ADMIN)
 
+
                 .anyRequest().authenticated()
         );
 
-
+        http.exceptionHandling(ecf ->
+                ecf.accessDeniedHandler(customAccessDeniedHandler)
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+        );
 
         return http.build();
     }

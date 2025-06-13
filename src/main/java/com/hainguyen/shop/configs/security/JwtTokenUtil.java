@@ -1,6 +1,8 @@
 package com.hainguyen.shop.configs.security;
 
+import com.hainguyen.shop.models.Token;
 import com.hainguyen.shop.models.User;
+import com.hainguyen.shop.repositories.TokenRepository;
 import com.hainguyen.shop.utils.Constants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -11,6 +13,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -26,6 +29,7 @@ public class JwtTokenUtil {
     private final Environment env;
     @Value("${jwt.secretKey}")
     private String secret;
+    private final TokenRepository tokenRepository;
 
     public String generateToken(Authentication
                                          authentication, User user) {
@@ -68,9 +72,18 @@ public class JwtTokenUtil {
         return Long.valueOf(this.parseClaimsToken(token).get("userId").toString());
     }
 
-    public boolean validateToken(String token, Long UserId) {
+    public boolean validateToken(String token, User user) {
+        Token existingToken = tokenRepository.findByToken(token);
+
+        if( existingToken == null || existingToken.isRevoked()|| isTokenExpired(token) || !user.isActive()) {
+            throw new BadCredentialsException("Unauthorized");
+        }
+        return true;
+    }
+
+    public boolean validateToken(String token, Long userId) {
         Long userIdExtract = extractUserId(token);
-        if(!userIdExtract.equals(UserId) || isTokenExpired(token)) {
+        if(!userIdExtract.equals(userId) || isTokenExpired(token)) {
             throw new BadCredentialsException("Unauthorized");
         }
         return true;
