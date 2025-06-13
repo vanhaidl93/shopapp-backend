@@ -3,7 +3,7 @@ package com.hainguyen.shop.controllers;
 import com.hainguyen.shop.dtos.request.RefreshTokenDto;
 import com.hainguyen.shop.dtos.request.UserRegister;
 import com.hainguyen.shop.dtos.response.UserResponse;
-import com.hainguyen.shop.configs.security.JwtTokenUtil;
+import com.hainguyen.shop.utils.JwtTokenUtil;
 import com.hainguyen.shop.dtos.response.UsersResponsePage;
 import com.hainguyen.shop.mapper.UserMapper;
 import com.hainguyen.shop.models.Token;
@@ -19,8 +19,6 @@ import com.hainguyen.shop.utils.LocalizationUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -31,7 +29,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -100,7 +97,7 @@ public class UserController {
                                                       @RequestHeader("Authorization") String bearerToken) {
         boolean isUpdated = false;
         String token = bearerToken.substring(7);
-        if(jwtTokenUtil.validateToken(token,userId)){
+        if(jwtTokenUtil.validateTokenOwner(token,userId)){
             // only the valid token owner could update
             isUpdated = userService.updateUser(userId, userDto);
         }

@@ -1,6 +1,6 @@
 package com.hainguyen.shop.services.impl;
 
-import com.hainguyen.shop.configs.security.JwtTokenUtil;
+import com.hainguyen.shop.utils.JwtTokenUtil;
 import com.hainguyen.shop.dtos.request.UserDto;
 import com.hainguyen.shop.dtos.request.UserRegister;
 import com.hainguyen.shop.dtos.response.UserResponse;
@@ -153,6 +153,12 @@ public class UserService implements IUserService {
         User existingUser = userRepo.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Use", "userId", userId.toString()));
         existingUser.setActive(active);
+    }
+
+    @Override
+    public User getUserByPhoneNumber(String phoneNumber) {
+        return userRepo.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new ResourceNotFoundException("Use", "phoneNumber", phoneNumber));
     }
 
 }

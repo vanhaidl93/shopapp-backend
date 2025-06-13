@@ -1,5 +1,6 @@
-package com.hainguyen.shop.configs.security;
+package com.hainguyen.shop.filters;
 
+import com.hainguyen.shop.utils.JwtTokenUtil;
 import com.hainguyen.shop.exceptions.ResourceNotFoundException;
 import com.hainguyen.shop.models.User;
 import com.hainguyen.shop.repositories.UserRepo;

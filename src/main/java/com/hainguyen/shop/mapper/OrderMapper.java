@@ -46,7 +46,7 @@ public class OrderMapper {
         return orderResponse;
     }
 
-    public List<OrderDetail> cartItemsMapToOrderDetail(List<CartItemDto> cartItemsDto, Order savedOrder) {
+    public List<OrderDetail> cartItemsMapToOrderDetail(List<CartItemDto> cartItemsDto) {
 
         return cartItemsDto
                 .stream().map(item -> {
@@ -55,7 +55,6 @@ public class OrderMapper {
                                     "id", item.getProductId().toString()));
 
                     return  OrderDetail.builder()
-                            .order(savedOrder)
                             .product(existingProduct)
                             .price(existingProduct.getPrice())
                             .numberOfProducts(item.getQuantity())

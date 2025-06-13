@@ -23,7 +23,7 @@ public class Product extends  BaseEntity{
     private String thumbnail;
     private String description;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @JsonManagedReference
     List<ProductImage> productImages;
 
@@ -32,5 +32,8 @@ public class Product extends  BaseEntity{
     Category category;
 
 
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    List<Comment> comments;
 
 }

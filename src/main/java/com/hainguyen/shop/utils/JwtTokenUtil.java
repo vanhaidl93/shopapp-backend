@@ -1,9 +1,8 @@
-package com.hainguyen.shop.configs.security;
+package com.hainguyen.shop.utils;
 
 import com.hainguyen.shop.models.Token;
 import com.hainguyen.shop.models.User;
 import com.hainguyen.shop.repositories.TokenRepository;
-import com.hainguyen.shop.utils.Constants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -13,7 +12,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -81,7 +79,7 @@ public class JwtTokenUtil {
         return true;
     }
 
-    public boolean validateToken(String token, Long userId) {
+    public boolean validateTokenOwner(String token, Long userId) {
         Long userIdExtract = extractUserId(token);
         if(!userIdExtract.equals(userId) || isTokenExpired(token)) {
             throw new BadCredentialsException("Unauthorized");

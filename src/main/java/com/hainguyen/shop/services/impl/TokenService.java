@@ -1,6 +1,6 @@
 package com.hainguyen.shop.services.impl;
 
-import com.hainguyen.shop.configs.security.JwtTokenUtil;
+import com.hainguyen.shop.utils.JwtTokenUtil;
 import com.hainguyen.shop.exceptions.ResourceNotFoundException;
 import com.hainguyen.shop.models.Token;
 import com.hainguyen.shop.models.User;

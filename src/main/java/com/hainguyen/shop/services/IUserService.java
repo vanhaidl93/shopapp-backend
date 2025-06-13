@@ -21,4 +21,5 @@ public interface IUserService {
 
     void blockOrEnableUser (Long userId, boolean active);
 
+    User getUserByPhoneNumber(String phoneNumber);
 }

@@ -30,6 +30,7 @@ public class OrderService implements IOrderService {
     private final OrderMapper orderMapper;
 
     @Override
+    @Transactional
     public OrderResponse createOrder(OrderDto orderDto) {
         User existingUser = userRepo.findById(orderDto.getUserId())
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", orderDto.getUserId().toString()));
@@ -42,17 +43,16 @@ public class OrderService implements IOrderService {
         newOrder.setActive(true);
         newOrder.setShippingAddress(orderDto.getShippingAddress());
         newOrder.setAddress(existingUser.getAddress());
-        // save order (without orderDetails)
-        Order savedOrder = orderRepo.save(newOrder);
 
         // Map CartItemsDto to OrderDetail and save database (include Order)
         List<OrderDetail> orderDetails =
-                    orderMapper.cartItemsMapToOrderDetail(orderDto.getCartItems(),savedOrder);
+                orderMapper.cartItemsMapToOrderDetail(orderDto.getCartItems());
 
-        List<OrderDetail> savedOrderDetails = orderDetailRepo.saveAll(orderDetails);
+        // maintain both side (order + order details) before save.
+        orderDetails.forEach(newOrder::addOrderDetail);
 
-
-        savedOrder.setOrderDetails(savedOrderDetails);
+        // save both side.
+        Order savedOrder = orderRepo.save(newOrder);
 
         return orderMapper.mapToOrderResponse(savedOrder,new OrderResponse());
     }
