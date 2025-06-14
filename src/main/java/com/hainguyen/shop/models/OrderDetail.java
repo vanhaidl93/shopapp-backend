@@ -29,4 +29,9 @@ public class OrderDetail {
     private int numberOfProducts;
     private Float totalMoney;
     private String color;
+
+    @ManyToOne
+    @JoinColumn(name = "coupon_id")
+    @JsonBackReference
+    private Coupon coupon;
 }

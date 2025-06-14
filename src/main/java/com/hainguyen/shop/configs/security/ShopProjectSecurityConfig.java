@@ -73,6 +73,7 @@ public class ShopProjectSecurityConfig {
 
         http.authorizeHttpRequests(req -> req
                 .requestMatchers(
+                        // user login - register
                         String.format("%s/users/register", apiPrefix),
                         String.format("%s/users/login", apiPrefix),
                         // enable "/error"
@@ -83,6 +84,8 @@ public class ShopProjectSecurityConfig {
                         "/v3/api-docs/**",
                         "/swagger-ui/**"
                 ).permitAll()
+
+                .requestMatchers(GET, String.format("%s/coupons/**", apiPrefix)).permitAll()
 
                 .requestMatchers(GET, String.format("%s/roles**", apiPrefix)).permitAll()
 
@@ -110,7 +113,6 @@ public class ShopProjectSecurityConfig {
                 .requestMatchers(POST, String.format("%s/orderDetails/**", apiPrefix)).hasAnyRole(Role.USER)
                 .requestMatchers(PUT, String.format("%s/orderDetails/**", apiPrefix)).hasRole(Role.ADMIN)
                 .requestMatchers(DELETE, String.format("%s/orderDetails/**", apiPrefix)).hasRole(Role.ADMIN)
-
 
                 .anyRequest().authenticated()
         );

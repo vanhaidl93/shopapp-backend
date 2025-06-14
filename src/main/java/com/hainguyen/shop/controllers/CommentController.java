@@ -46,11 +46,7 @@ public class CommentController {
     @PreAuthorize("hasAnyRole('ROLE_ADMIN','ROLE_USER')")
     public ResponseEntity<?> insertComment(@Valid @RequestBody CommentDto commentDto) {
 
-        // Insert the new comment
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User authenticatedUser = userService.getUserByPhoneNumber(authentication.getName());
-
-        if (!Objects.equals(authenticatedUser.getId(), commentDto.getUserId())) {
+        if (checkOwnerComment(commentDto)) {
             return ResponseEntity.badRequest().body("You cannot comment as another user");
         }
 
@@ -65,16 +61,21 @@ public class CommentController {
     public ResponseEntity<String> updateComment(@PathVariable("id") Long commentId,
                                            @Valid @RequestBody CommentDto commentDto) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User authenticatedUser = userService.getUserByPhoneNumber(authentication.getName());
-
-        if (!Objects.equals(authenticatedUser.getId(), commentDto.getUserId())) {
+        if (checkOwnerComment(commentDto)) {
             return ResponseEntity.badRequest().body("You cannot update another user's comment");
         }
 
         commentService.updateComment(commentId, commentDto);
         return ResponseEntity.ok(localizationUtils.getLocalizedMessage("MESSAGE_200"));
 
+    }
+
+
+    private boolean checkOwnerComment(CommentDto commentDto){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User authenticatedUser = userService.getUserByPhoneNumber(authentication.getName());
+
+        return !Objects.equals(authenticatedUser.getId(), commentDto.getUserId());
     }
 
 

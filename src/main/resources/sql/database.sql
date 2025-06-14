@@ -252,3 +252,21 @@ VALUES (14, 14, 1, 10.99, 2, 21.98, 'Red'),
        (69, 36, 52, 7.49, 2, 14.98, 'White'),
        (70, 37, 53, 9.99, 1, 9.99, 'Red'),
        (71, 37, 54, 5.99, 3, 17.97, 'Blue');
+
+-- coupons and coupon_conditions table.
+INSERT INTO coupons(id, code) VALUES (1, 'HEAVEN');
+INSERT INTO coupons(id, code) VALUES (2, 'DISCOUNT20');
+
+INSERT INTO coupon_conditions (id, coupon_id, attribute, operator, value, discount_amount)
+VALUES (1, 1, 'minimum_amount', '>', '100', 10);
+
+INSERT INTO coupon_conditions (id, coupon_id, attribute, operator, value, discount_amount)
+VALUES (2, 1, 'applicable_date', 'BETWEEN', '2025-06-14', 5);
+
+INSERT INTO coupon_conditions (id, coupon_id, attribute, operator, value, discount_amount)
+VALUES (3, 2, 'minimum_amount', '>', '200', 20);
+
+
+--total price of order: 120$ - HEAVEN (2 coupon conditions will be applied)
+-- condition 1: 120 * (1 - 10/100) = 120 * 0.9 = 108$
+-- condition 2: 108* (1 - 5/100) = 108 * 0.95 = 102.6$

@@ -3,6 +3,7 @@ package com.hainguyen.shop.controllers;
 import com.hainguyen.shop.dtos.response.SuccessResponse;
 import com.hainguyen.shop.models.ProductImage;
 import com.hainguyen.shop.services.IProductImageService;
+import com.hainguyen.shop.services.IProductService;
 import com.hainguyen.shop.services.impl.ProductService;
 import com.hainguyen.shop.utils.Constants;
 import com.hainguyen.shop.utils.LocalizationUtils;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProductImageController {
 
     private final IProductImageService productImageService;
-    private final ProductService productService;
+    private final IProductService productService;
     private final LocalizationUtils localizationUtils;
 
     @DeleteMapping("/{id}")

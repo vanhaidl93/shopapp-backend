@@ -21,5 +21,5 @@ public interface IProductService {
     void uploadProductImage(List<MultipartFile> files, Long productId) throws IOException;
 
     List<ProductResponse> findProductsByProductIds(List<Long> productIds);
-    void deleteFile(String filename) throws IOException;
+    void deleteFile(String filename);
 }
