@@ -12,12 +12,12 @@ spring:
     hibernate:
       ddl-auto: none
       # ddl-auto: validate, in production environment.
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         # explicitly setting mysql dialect
         dialect: org.hibernate.dialect.MySQL8Dialect
-        format_sql: true
+        format_sql: false
     # Disable the Javax Validation inside Spring Data JPA
     javax:
       persistence:

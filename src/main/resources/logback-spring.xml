@@ -38,8 +38,8 @@
         <appender-ref ref="Console" />
     </root>
 
-    <!-- LOG "com.hainguyen.shop*" at ERROR level -->
-    <logger name="com.hainguyen.shop" level="error" additivity="false">
+    <!-- LOG "com.hainguyen.shop*" at INFO level -->
+    <logger name="com.hainguyen.shop" level="info" additivity="false">
         <appender-ref ref="RollingFile" />
         <appender-ref ref="Console" />
     </logger>
