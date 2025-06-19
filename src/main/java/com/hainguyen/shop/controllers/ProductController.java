@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.javafaker.Faker;
 import com.hainguyen.shop.dtos.response.ProductsResponsePage;
 import com.hainguyen.shop.services.IProductRedisService;
+import com.hainguyen.shop.services.IProductRedisTrendingService;
 import com.hainguyen.shop.services.IProductService;
 import com.hainguyen.shop.utils.Constants;
 import com.hainguyen.shop.dtos.request.ProductDto;
@@ -38,6 +39,7 @@ public class ProductController {
     private final IProductService productService;
     private final LocalizationUtils localizationUtils;
     private final IProductRedisService productRedisService;
+    private final IProductRedisTrendingService productRedisTrendingService;
 
     private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
 
@@ -102,6 +104,9 @@ public class ProductController {
     @GetMapping("/{id}")
     public ResponseEntity<ProductResponse> getProduct(@PathVariable Long id) {
         ProductResponse existingProductResponse = productService.getProductById(id);
+
+        // addScore into RScoreSortedSet
+        productRedisTrendingService.addVisit(existingProductResponse);
 
         return ResponseEntity.ok().body(existingProductResponse);
     }

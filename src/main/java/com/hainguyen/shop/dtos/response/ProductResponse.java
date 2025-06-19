@@ -5,11 +5,13 @@ import lombok.*;
 import java.util.List;
 
 
+@EqualsAndHashCode(callSuper = true)
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class ProductResponse extends BaseResponse {
 
     private Long id;
