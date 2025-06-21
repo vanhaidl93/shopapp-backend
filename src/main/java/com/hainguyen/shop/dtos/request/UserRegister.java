@@ -29,6 +29,10 @@ public class UserRegister {
             message = "Mobile number must be 10 digits")
     private String phoneNumber;
 
+    @Pattern(regexp = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$",
+    message = "Invalid email format")
+    private String email;
+
     @NotBlank(message = "Password cannot be blank")
     private String password;
 

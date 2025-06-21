@@ -17,6 +17,8 @@ public class Role {
     @Column(unique = true, nullable = false)
     private String name;
 
+    @Transient
     public static final String USER ="USER";
+    @Transient
     public static final String ADMIN ="ADMIN";
 }

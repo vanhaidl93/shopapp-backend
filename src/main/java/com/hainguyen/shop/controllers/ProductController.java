@@ -52,10 +52,21 @@ public class ProductController {
     }
 
     @PostMapping(value = "uploads/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<SuccessResponse> UploadImages(@RequestParam("files") List<MultipartFile> files,
-                                                        @PathVariable Long productId) throws IOException {
+    public ResponseEntity<SuccessResponse> uploadProductImages(@RequestParam("files") List<MultipartFile> files,
+                                                        @PathVariable Long productId){
 
         productService.uploadProductImage(files, productId);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new SuccessResponse(Constants.STATUS_201,
+                        localizationUtils.getLocalizedMessage(Constants.MESSAGE_201)));
+    }
+
+    @PostMapping(value = "uploads/thumbnail/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<SuccessResponse> uploadThumbnail(@RequestParam("file") MultipartFile file,
+                                                        @PathVariable Long productId) {
+
+        productService.uploadThumbnail(file, productId);
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new SuccessResponse(Constants.STATUS_201,
                         localizationUtils.getLocalizedMessage(Constants.MESSAGE_201)));
@@ -65,10 +76,10 @@ public class ProductController {
     public ResponseEntity<?> viewProductImage(@PathVariable String imageName) {
 
         Path imagePath = Paths.get("uploads/" + imageName);
-        // uploads/0ca19870-50b7-4719-82ae-b6b8272d45cd_062
+        // uploads/1edb97d1-cbdf-47b9-9b1c-526e3d406ebf_domino-studio-164_6wVEHfI-unsplash.jpg
         try {
             UrlResource resource = new UrlResource(imagePath.toUri());
-            // Resource base on Url, Uri: rootFile/imagePath
+            // Resource base on Url, Uri: rootFile/uploads/0ca19870-50b7-4719-82ae-b6b8272d45cd_062
             if (resource.exists()) {
                 return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG)
                         .body(resource);

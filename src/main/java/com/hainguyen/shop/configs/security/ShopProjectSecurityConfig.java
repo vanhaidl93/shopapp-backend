@@ -89,7 +89,7 @@ public class ShopProjectSecurityConfig {
 
                 .requestMatchers(GET, String.format("%s/roles**", apiPrefix)).permitAll()
 
-                .requestMatchers(GET, String.format("%s/categories**", apiPrefix)).permitAll()
+                .requestMatchers(GET, String.format("%s/categories/**", apiPrefix)).permitAll()
                 .requestMatchers(POST, String.format("%s/categories/**", apiPrefix)).hasAnyRole(Role.ADMIN)
                 .requestMatchers(PUT, String.format("%s/categories/**", apiPrefix)).hasAnyRole(Role.ADMIN)
                 .requestMatchers(DELETE, String.format("%s/categories/**", apiPrefix)).hasAnyRole(Role.ADMIN)
@@ -103,8 +103,7 @@ public class ShopProjectSecurityConfig {
 
                 .requestMatchers(DELETE, String.format("%s/productImages/**", apiPrefix)).hasRole(Role.ADMIN)
 
-                .requestMatchers(GET, String.format("%s/orders/**", apiPrefix)).hasAnyRole(Role.USER)
-                .requestMatchers(GET, String.format("%s/orders/search-keyword", apiPrefix)).hasRole(Role.ADMIN)
+                .requestMatchers(GET, String.format("%s/orders/**", apiPrefix)).hasAnyRole(Role.USER,Role.ADMIN)
                 .requestMatchers(POST, String.format("%s/orders", apiPrefix)).hasAnyRole(Role.USER)
                 .requestMatchers(PUT, String.format("%s/orders/**", apiPrefix)).hasRole(Role.ADMIN)
                 .requestMatchers(DELETE, String.format("%s/orders/**", apiPrefix)).hasRole(Role.ADMIN)

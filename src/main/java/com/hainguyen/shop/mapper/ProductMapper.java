@@ -16,10 +16,16 @@ public class ProductMapper {
     private final ModelMapper modelMapper;
 
     public ProductResponse mapToProductResponse(Product product, ProductResponse productResponse) {
-        CategoryResponse categoryResponse = modelMapper.map(product.getCategory(), CategoryResponse.class);
-        List<ProductImageResponse> productImagesResponse = product.getProductImages().stream()
-                .map(productImage -> modelMapper.map(productImage,ProductImageResponse.class))
-                .toList();
+        CategoryResponse categoryResponse = null;
+        if (product.getCategory() != null) {
+            categoryResponse = modelMapper.map(product.getCategory(), CategoryResponse.class);
+        }
+        List<ProductImageResponse> productImagesResponse = null;
+        if (product.getProductImages() != null) {
+            productImagesResponse = product.getProductImages().stream()
+                    .map(productImage -> modelMapper.map(productImage, ProductImageResponse.class))
+                    .toList();
+        }
 
         productResponse = modelMapper.map(product, ProductResponse.class);
         productResponse.setCategoryResponse(categoryResponse);

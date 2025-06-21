@@ -1,5 +1,6 @@
 package com.hainguyen.shop.services.impl;
 
+import com.hainguyen.shop.dtos.request.UserLoginDto;
 import com.hainguyen.shop.utils.JwtTokenUtil;
 import com.hainguyen.shop.dtos.request.UserDto;
 import com.hainguyen.shop.dtos.request.UserRegister;
@@ -48,12 +49,14 @@ public class UserService implements IUserService {
             throw new UserAlreadyExistsException("User already register with given mobiNumber "
                     + phoneNumber);
         }
+
         Role role = roleRepo.findById(userRegister.getRoleId())
                 .orElseThrow(() -> new ResourceNotFoundException("Role", "id", userRegister.getRoleId().toString()));
 
         User newUser = User.builder()
                 .fullName(userRegister.getFullName())
                 .phoneNumber(userRegister.getPhoneNumber())
+                .email(userRegister.getEmail())
                 .password(userRegister.getPassword())
                 .address(userRegister.getAddress())
                 .dateOfBirth(userRegister.getDateOfBirth())
@@ -72,21 +75,32 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public String login(String phoneNumber, String password, Long roleId) {
+    public String login(UserLoginDto userLoginDto) {
+        User existingUser;
 
-        User existingUser = userRepo.findByPhoneNumber(phoneNumber)
-                .orElseThrow(() -> new BadCredentialsException("Invalid input"));
+        if (userLoginDto.getPhoneNumber() != null) {
+            existingUser = userRepo.findByPhoneNumber(userLoginDto.getPhoneNumber())
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException("User", "phoneNumber", userLoginDto.getPhoneNumber()));
+        } else if (userLoginDto.getEmail() != null) {
+            existingUser = userRepo.findByEmail(userLoginDto.getPhoneNumber())
+                    .orElseThrow(() -> new ResourceNotFoundException("User", "email", userLoginDto.getEmail()));
+        }else {
+            throw new IllegalArgumentException("At least email or phone number is required");
+        }
 
-        if (!existingUser.isActive()) {
+        if (existingUser !=null && !existingUser.isActive()) {
             throw new BadCredentialsException("User is locked");
         }
 
         String jwt = "";
         UsernamePasswordAuthenticationToken authenticationToken =
-                UsernamePasswordAuthenticationToken.unauthenticated(phoneNumber, password);
+                UsernamePasswordAuthenticationToken
+                        .unauthenticated(userLoginDto.getPhoneNumber(), userLoginDto.getPassword());
         Authentication authenticationRes = authenticationManager.authenticate(authenticationToken);
 
         if (authenticationRes != null && authenticationRes.isAuthenticated()) {
+            assert existingUser != null;
             jwt = jwtTokenUtil.generateToken(authenticationRes, existingUser);
         }
 

@@ -12,14 +12,22 @@ import java.util.List;
 public interface IProductService {
 
     ProductResponse createProduct(ProductDto productDto);
+
     ProductResponse getProductById(Long id);
+
     ProductsResponsePage getAllProducts(PageRequest pageRequest, int pageNumber, String keyword, Long categoryId);
+
     Boolean updateProduct(Long id, ProductDto productDto);
+
     Boolean deleteProduct(Long id);
+
     boolean existsProduct(String name);
 
-    void uploadProductImage(List<MultipartFile> files, Long productId) throws IOException;
+    void uploadProductImage(List<MultipartFile> files, Long productId);
+
+    void uploadThumbnail(MultipartFile file, Long productId);
 
     List<ProductResponse> findProductsByProductIds(List<Long> productIds);
-    void deleteFile(String filename);
+
+    void deleteUploadsFolderStorageProductImage(String imageName);
 }

@@ -1,5 +1,6 @@
 package com.hainguyen.shop.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hainguyen.shop.models.listenner.ProductListener;
 import jakarta.persistence.*;
@@ -29,11 +30,18 @@ public class Product extends  BaseEntity{
 
     @ManyToOne
     @JoinColumn(name = "category_id")
+    @JsonBackReference
     Category category;
 
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @JsonManagedReference
     List<Comment> comments;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST)
+    @JsonBackReference
+    List<OrderDetail> orderDetails;
+
+
 
 }

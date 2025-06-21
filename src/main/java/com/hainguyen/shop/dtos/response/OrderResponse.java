@@ -33,4 +33,5 @@ public class OrderResponse {
     private boolean active;
 
     private List<OrderDetailResponse> orderDetailsResponse;
+
 }

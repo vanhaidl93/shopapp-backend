@@ -58,4 +58,15 @@ public class CategoryService implements ICategoryService {
         categoryRepo.deleteById(id);
         return true;
     }
+
+    @Override
+    public CategoryResponse getCategoryById(Long categoryId) {
+        Category existingCategory = categoryRepo.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category","categoryId",categoryId.toString()));
+
+        return CategoryResponse.builder()
+                .id(existingCategory.getId())
+                .name(existingCategory.getName())
+                .build();
+    }
 }

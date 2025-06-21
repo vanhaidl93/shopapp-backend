@@ -4,8 +4,8 @@ package com.hainguyen.shop.services.impl;
 import com.hainguyen.shop.exceptions.ResourceNotFoundException;
 import com.hainguyen.shop.models.Coupon;
 import com.hainguyen.shop.models.CouponCondition;
-import com.hainguyen.shop.repositories.CouponConditionRepository;
-import com.hainguyen.shop.repositories.CouponRepository;
+import com.hainguyen.shop.repositories.CouponConditionRepo;
+import com.hainguyen.shop.repositories.CouponRepo;
 import com.hainguyen.shop.services.ICouponService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,8 +18,8 @@ import java.util.List;
 @Service
 public class CouponService implements ICouponService {
 
-    private final CouponRepository couponRepository;
-    private final CouponConditionRepository couponConditionRepository;
+    private final CouponRepo couponRepository;
+    private final CouponConditionRepo couponConditionRepository;
 
     @Override
     public double calculateCouponValue(String couponCode, double totalAmount) {

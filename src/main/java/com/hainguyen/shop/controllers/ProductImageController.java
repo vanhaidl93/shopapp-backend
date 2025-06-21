@@ -26,10 +26,10 @@ public class ProductImageController {
     @DeleteMapping("/{id}")
     public ResponseEntity<SuccessResponse> delete(@PathVariable Long id) {
 
-        // ProductImage database
+        // in ProductImage database
         ProductImage deleteProductImage = productImageService.deleteProductImage(id);
-        // uploads folder
-        productService.deleteFile(deleteProductImage.getImageName());
+        // in uploads folder
+        productService.deleteUploadsFolderStorageProductImage(deleteProductImage.getImageName());
 
         return ResponseEntity.ok(new SuccessResponse(Constants.STATUS_200,
                 localizationUtils.getLocalizedMessage(Constants.MESSAGE_200)));

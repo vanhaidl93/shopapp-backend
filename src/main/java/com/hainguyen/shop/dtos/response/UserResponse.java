@@ -14,6 +14,7 @@ public class UserResponse extends BaseResponse{
     private Long id;
     private String fullName;
     private String phoneNumber;
+    private String email;
     private String address;
     private boolean isActive;
     private Date dateOfBirth;

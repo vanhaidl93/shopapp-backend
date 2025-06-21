@@ -31,8 +31,8 @@ public class OrderDto {
     private Float totalMoney;
     private String shippingMethod;
     private String paymentMethod;
-    private String couponCode;
 
+    private String couponCode;
     private List<CartItemDto> cartItems;
 
 }

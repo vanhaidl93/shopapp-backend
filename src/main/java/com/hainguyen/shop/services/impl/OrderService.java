@@ -6,6 +6,7 @@ import com.hainguyen.shop.dtos.response.OrdersResponsePage;
 import com.hainguyen.shop.exceptions.ResourceNotFoundException;
 import com.hainguyen.shop.mapper.OrderMapper;
 import com.hainguyen.shop.models.*;
+import com.hainguyen.shop.repositories.CouponRepo;
 import com.hainguyen.shop.repositories.OrderDetailRepo;
 import com.hainguyen.shop.repositories.OrderRepo;
 import com.hainguyen.shop.repositories.UserRepo;
@@ -28,6 +29,7 @@ public class OrderService implements IOrderService {
     private final OrderRepo orderRepo;
     private final OrderDetailRepo orderDetailRepo;
     private final OrderMapper orderMapper;
+    private final CouponRepo couponRepo;
 
     @Override
     @Transactional
@@ -77,7 +79,17 @@ public class OrderService implements IOrderService {
 
         Order updatedOrder = orderMapper.mapToOrder(orderDto, existingOrder);
         updatedOrder.setAddress(existingUser.getAddress());
+        // Handle Coupon
         updatedOrder.setUser(existingUser);
+
+        // Handle Coupon
+        if (!orderDto.getCouponCode().trim().isEmpty()) {
+            Coupon coupon = couponRepo.findByCode(orderDto.getCouponCode())
+                    .orElseThrow(() -> new ResourceNotFoundException("Coupon", "id", orderDto.getCouponCode()));
+            updatedOrder.setCoupon(coupon);
+        } else {
+            updatedOrder.setCoupon(null); // or keep existing if you prefer
+        }
 
         return true;
     }

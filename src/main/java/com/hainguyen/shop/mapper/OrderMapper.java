@@ -28,7 +28,12 @@ public class OrderMapper {
                     OrderDetailResponse orderDetailResponse = modelMapper.map(orderDetail, OrderDetailResponse.class);
 
                     ProductResponse productResponse = modelMapper.map(orderDetail.getProduct(), ProductResponse.class);
-                    CategoryResponse categoryResponse = modelMapper.map(orderDetail.getProduct().getCategory(), CategoryResponse.class);
+
+                    CategoryResponse categoryResponse = null;
+                    if (orderDetail.getProduct().getCategory() != null) {
+                        categoryResponse = modelMapper.map(orderDetail.getProduct().getCategory(), CategoryResponse.class);
+                    }
+
                     List<ProductImageResponse> productImagesResponse =
                             orderDetail.getProduct().getProductImages().stream()
                                     .map(productImage -> modelMapper.map(productImage, ProductImageResponse.class))
@@ -54,7 +59,7 @@ public class OrderMapper {
                             .orElseThrow(() -> new ResourceNotFoundException("Product",
                                     "id", item.getProductId().toString()));
 
-                    return  OrderDetail.builder()
+                    return OrderDetail.builder()
                             .product(existingProduct)
                             .price(existingProduct.getPrice())
                             .numberOfProducts(item.getQuantity())

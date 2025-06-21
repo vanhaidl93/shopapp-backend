@@ -1,6 +1,7 @@
 package com.hainguyen.shop.services;
 
 import com.hainguyen.shop.dtos.request.UserDto;
+import com.hainguyen.shop.dtos.request.UserLoginDto;
 import com.hainguyen.shop.dtos.request.UserRegister;
 import com.hainguyen.shop.dtos.response.UsersResponsePage;
 import com.hainguyen.shop.models.User;
@@ -9,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 public interface IUserService {
     void createUser(UserRegister userRegister);
 
-    String login(String phoneNumber, String password, Long roleId);
+    String login(UserLoginDto userLoginDto);
 
     User getUserByToken(String token);
 

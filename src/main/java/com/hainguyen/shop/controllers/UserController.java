@@ -56,9 +56,9 @@ public class UserController {
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody UserLoginDto userLoginDto,
                                                HttpServletRequest request) {
 
-        String token = userService.login(userLoginDto.getPhoneNumber(), userLoginDto.getPassword(),
-                userLoginDto.getRoleId());
+        String token = userService.login(userLoginDto);
 
+        // add token into database.
         String userAgent = request.getHeader("User-Agent");
         User user = userService.getUserByToken(token);
         Token newToken = tokenService.addToken(user, token, isMobile(userAgent));

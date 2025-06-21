@@ -42,7 +42,9 @@ public class ProductService implements IProductService {
     private final ProductMapper productMapper;
     private final IProductRedisService productRedisService;
 
-    private static String FOLDER_UPLOADS = "uploads";
+
+    private static final String FOLDER_UPLOADS = "uploads";
+    private static final long MAX_SIZE = 10 * 1024 * 1024;
 
     @Override
     public ProductResponse createProduct(ProductDto productDto) {
@@ -58,7 +60,7 @@ public class ProductService implements IProductService {
 
         Product savedProduct = productRepo.save(newProduct);
 
-        return productMapper.mapToProductResponse(savedProduct,new ProductResponse());
+        return productMapper.mapToProductResponse(savedProduct, new ProductResponse());
     }
 
     @Override
@@ -104,11 +106,9 @@ public class ProductService implements IProductService {
 
     @Override
     public Boolean deleteProduct(Long id) {
-
         productRepo.deleteById(id);
 
         return true;
-
     }
 
     @Override
@@ -127,44 +127,58 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public void uploadProductImage(List<MultipartFile> files, Long productId)
-            throws IOException {
+    public void uploadProductImage(List<MultipartFile> files, Long productId) {
 
         for (MultipartFile file : files) {
             if (file.getSize() == 0) continue;
+            var checkedFile = overallConditionsRequiredImage(file);
 
-            if (file.getSize() > 10 * 1024 * 1024) {
-                throw new RuntimeException("File too large! Maximum size is 10MB!");
+            // store file into "uploads" folder.
+            String uploadedUniqueFileName = null;
+            try {
+                uploadedUniqueFileName = storeImage(checkedFile);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
 
-            String contentType = file.getContentType();
-            if (contentType == null || !contentType.startsWith("image/")) {
-                throw new RuntimeException("File must be an image!");
-            }
-            // store file into uploads folder.
-            String uploadedUniqueFileName = storeImage(file);
-
-            // save thumbnail of uploaded file into product_images table.
+            // save thumbnail of uploaded file into "product_images" table.
             createProductImage(uploadedUniqueFileName, productId);
         }
     }
 
     @Override
-    public void deleteFile(String filename) {
+    @Transactional
+    public void uploadThumbnail(MultipartFile file, Long productId) {
+        // conditions
+        if (file.getSize() ==0) {
+            throw new IllegalArgumentException("File is emptied!");
+        }
+        var checkedFile = overallConditionsRequiredImage(file);
 
-        Path filePath = Paths.get(FOLDER_UPLOADS).resolve(filename);
+        // delete and update "uploads" folder.
+        String uniqueThumbnail;
         try {
-            if (Files.exists(filePath)) {
-                Files.delete(filePath);
-            } else {
-                throw new FileNotFoundException("File not found: " + filename);
-            }
-        } catch (Exception e) {
+            uniqueThumbnail = storeImage(checkedFile);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        // update "products" database
+        Product existingProduct = productRepo.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product","productId",productId.toString()));
+        // delete the stale thumbnail in "Uploads" folder.
+        if(existingProduct.getThumbnail() !=null){
+            deleteUploadsFolderStorage(existingProduct.getThumbnail());
+        }
+        existingProduct.setThumbnail(uniqueThumbnail);
     }
 
-    // save only 5 files into product_images by productId
+    @Override
+    public void deleteUploadsFolderStorageProductImage(String imageName) {
+        deleteUploadsFolderStorage(imageName);
+    }
+
+    // save only 5 files into "product_images" per productId
     private void createProductImage(String uploadUniqueFileName, Long productId) {
 
         Product existingProduct = productRepo.findById(productId)
@@ -186,19 +200,49 @@ public class ProductService implements IProductService {
 
     // Store files into uploads folder.
     private String storeImage(MultipartFile file) throws IOException {
+        // domino-studio-164_6wVEHfI-unsplash.jpg
         String fileName = file.getOriginalFilename();
-        // create unique fileName ( add UUID random), avoid to overwrite.
+        // 1edb97d1-cbdf-47b9-9b1c-526e3d406ebf_domino-studio-164_6wVEHfI-unsplash.jpg
         String uniqueFileName = UUID.randomUUID() + "_" + fileName;
-        // create uploads folder at current working directory
+
+        // (root) current working space/uploads
         Path uploadDir = Paths.get(FOLDER_UPLOADS);
         if (!Files.exists(uploadDir)) {
             Files.createDirectory(uploadDir);
         }
-        // copy uploaded file into uploads directory.
+
+        // (root) current working space/uploads/1edb97d1-cbdf-47b9-9b1c-526e3d406ebf_domino-studio-164_6wVEHfI-unsplash.jpg
         Path uniqueFilePath = uploadDir.resolve(uniqueFileName);
         Files.copy(file.getInputStream(), uniqueFilePath, StandardCopyOption.REPLACE_EXISTING);
 
+        // 1edb97d1-cbdf-47b9-9b1c-526e3d406ebf_domino-studio-164_6wVEHfI-unsplash.jpg
         return uniqueFileName;
+    }
+
+    private MultipartFile overallConditionsRequiredImage(MultipartFile file){
+        if (file.getSize() > MAX_SIZE) {
+            throw new IllegalArgumentException("File too large! Maximum size is 10MB!");
+        }
+
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new IllegalArgumentException("File must be an image!");
+        }
+        return file;
+    }
+
+    private void deleteUploadsFolderStorage(String imageName) {
+
+        Path filePath = Paths.get(FOLDER_UPLOADS).resolve(imageName);
+        try {
+            if (Files.exists(filePath)) {
+                Files.delete(filePath);
+            } else {
+                throw new FileNotFoundException("File not found: " + imageName);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
