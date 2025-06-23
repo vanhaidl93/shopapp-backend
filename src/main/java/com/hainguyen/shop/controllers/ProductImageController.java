@@ -1,5 +1,6 @@
 package com.hainguyen.shop.controllers;
 
+import com.hainguyen.shop.dtos.response.ImageNameResponse;
 import com.hainguyen.shop.dtos.response.SuccessResponse;
 import com.hainguyen.shop.models.ProductImage;
 import com.hainguyen.shop.services.IProductImageService;
@@ -23,16 +24,15 @@ public class ProductImageController {
     private final IProductService productService;
     private final LocalizationUtils localizationUtils;
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<SuccessResponse> delete(@PathVariable Long id) {
+    @DeleteMapping("/{productImageName}")
+    public ResponseEntity<ImageNameResponse> delete(@PathVariable String productImageName) {
 
         // in ProductImage database
-        ProductImage deleteProductImage = productImageService.deleteProductImage(id);
+        ProductImage deleteProductImage = productImageService.deleteProductImage(productImageName);
         // in uploads folder
-        productService.deleteUploadsFolderStorageProductImage(deleteProductImage.getImageName());
+        productService.deleteUploadsFolderStorageProductImage(productImageName);
 
-        return ResponseEntity.ok(new SuccessResponse(Constants.STATUS_200,
-                localizationUtils.getLocalizedMessage(Constants.MESSAGE_200)));
+        return ResponseEntity.ok(ImageNameResponse.builder().imageName(deleteProductImage.getImageName()).build());
 
     }
 }

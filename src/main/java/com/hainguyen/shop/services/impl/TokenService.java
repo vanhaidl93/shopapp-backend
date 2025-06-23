@@ -9,7 +9,10 @@ import com.hainguyen.shop.services.ITokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,11 +27,17 @@ public class TokenService implements ITokenService {
     private static final int MAX_TOKENS = 3;
     private final TokenRepository tokenRepository;
     private final JwtTokenUtil jwtTokenUtil;
+    private final UserDetailsService userDetailsService;
 
     @Value("${jwt.expiration}")
     private long jwtExpiration;
     @Value("${jwt.expiration-refresh-token}")
     private long refreshJwtExpiration;
+
+    @Override
+    public Token findByRefreshToken(String refreshToken) {
+        return tokenRepository.findByRefreshToken(refreshToken);
+    }
 
     @Override
     @Transactional
@@ -66,7 +75,7 @@ public class TokenService implements ITokenService {
 
     @Override
     @Transactional
-    public Token refreshToken(String refreshToken, Authentication authentication) {
+    public Token refreshToken(String refreshToken) {
         Token existingToken = tokenRepository.findByRefreshToken(refreshToken);
 
         if (existingToken == null) {
@@ -75,15 +84,22 @@ public class TokenService implements ITokenService {
 
         if (existingToken.getRefreshExpirationDate().isBefore(LocalDateTime.now())) {
             tokenRepository.delete(existingToken);
-            throw new BadCredentialsException("Refresh token is expired");
+            throw new IllegalArgumentException("Refresh token is expired");
         }
+
+        // session creation policy: stateless, we have to explicitly create an Authentication object per request.
+        UserDetails userDetails = userDetailsService.loadUserByUsername(existingToken.getUser().getPhoneNumber());
+        Authentication authentication= UsernamePasswordAuthenticationToken.authenticated(
+                userDetails.getUsername(),
+                null,
+                userDetails.getAuthorities());
 
         String newToken = jwtTokenUtil.generateToken(authentication, existingToken.getUser());
         existingToken.setExpirationDate(LocalDateTime.now().plusSeconds(jwtExpiration));
         existingToken.setToken(newToken);
-        existingToken.setRefreshToken(UUID.randomUUID().toString());
-        existingToken.setRefreshExpirationDate(LocalDateTime.now().plusSeconds(refreshJwtExpiration));
 
         return existingToken;
     }
+
+
 }

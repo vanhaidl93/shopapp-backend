@@ -12,6 +12,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -27,6 +28,8 @@ public class JwtTokenUtil {
     private final Environment env;
     @Value("${jwt.secretKey}")
     private String secret;
+    @Value("${jwt.expiration}")
+    private long EXPIRATION_TOKEN;
     private final TokenRepository tokenRepository;
 
     public String generateToken(Authentication
@@ -39,7 +42,7 @@ public class JwtTokenUtil {
                         .map(GrantedAuthority::getAuthority)
                         .collect(Collectors.joining(",")))
                 .subject("JWT-TOKEN")
-                .expiration(new Date(new Date().getTime() + 2_592_000_000L)) // milliseconds
+                .expiration(new Date(new Date().getTime() + EXPIRATION_TOKEN*1000)) // milliseconds
                 .signWith(getSecretKey())
                 .compact();
     }

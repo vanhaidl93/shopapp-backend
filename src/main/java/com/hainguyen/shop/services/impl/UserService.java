@@ -23,6 +23,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +42,7 @@ public class UserService implements IUserService {
     private final AuthenticationManager authenticationManager;
     private final UserMapper userMapper;
     private final TokenRepository tokenRepository;
+
 
 
     @Override
@@ -76,31 +79,21 @@ public class UserService implements IUserService {
 
     @Override
     public String login(UserLoginDto userLoginDto) {
-        User existingUser;
+        User existingUser = userRepo.findByPhoneNumberOrEmail(userLoginDto.getPhoneNumber(),userLoginDto.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("At least email or phone number is required"));
 
-        if (userLoginDto.getPhoneNumber() != null) {
-            existingUser = userRepo.findByPhoneNumber(userLoginDto.getPhoneNumber())
-                    .orElseThrow(() ->
-                            new ResourceNotFoundException("User", "phoneNumber", userLoginDto.getPhoneNumber()));
-        } else if (userLoginDto.getEmail() != null) {
-            existingUser = userRepo.findByEmail(userLoginDto.getPhoneNumber())
-                    .orElseThrow(() -> new ResourceNotFoundException("User", "email", userLoginDto.getEmail()));
-        }else {
-            throw new IllegalArgumentException("At least email or phone number is required");
-        }
-
-        if (existingUser !=null && !existingUser.isActive()) {
+        if (existingUser != null && !existingUser.isActive()) {
             throw new BadCredentialsException("User is locked");
         }
 
         String jwt = "";
+        assert existingUser != null;
         UsernamePasswordAuthenticationToken authenticationToken =
                 UsernamePasswordAuthenticationToken
-                        .unauthenticated(userLoginDto.getPhoneNumber(), userLoginDto.getPassword());
+                        .unauthenticated(existingUser.getPhoneNumber(), userLoginDto.getPassword());
         Authentication authenticationRes = authenticationManager.authenticate(authenticationToken);
 
         if (authenticationRes != null && authenticationRes.isAuthenticated()) {
-            assert existingUser != null;
             jwt = jwtTokenUtil.generateToken(authenticationRes, existingUser);
         }
 

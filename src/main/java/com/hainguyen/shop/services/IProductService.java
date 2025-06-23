@@ -23,9 +23,9 @@ public interface IProductService {
 
     boolean existsProduct(String name);
 
-    void uploadProductImage(List<MultipartFile> files, Long productId);
+    List<String> uploadProductImage(List<MultipartFile> files, Long productId);
 
-    void uploadThumbnail(MultipartFile file, Long productId);
+    String uploadThumbnail(MultipartFile file, Long productId);
 
     List<ProductResponse> findProductsByProductIds(List<Long> productIds);
 

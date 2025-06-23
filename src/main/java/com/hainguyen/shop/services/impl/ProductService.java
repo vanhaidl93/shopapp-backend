@@ -16,6 +16,7 @@ import com.hainguyen.shop.dtos.response.ProductsResponsePage;
 import com.hainguyen.shop.services.IProductRedisService;
 import com.hainguyen.shop.services.IProductService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,9 +30,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductService implements IProductService {
@@ -50,6 +53,7 @@ public class ProductService implements IProductService {
     public ProductResponse createProduct(ProductDto productDto) {
         Category existingCategory = categoryRepo.findById(productDto.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "id", productDto.getCategoryId().toString()));
+
         Product newProduct = Product.builder()
                 .name(productDto.getName())
                 .price(productDto.getPrice())
@@ -127,7 +131,9 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public void uploadProductImage(List<MultipartFile> files, Long productId) {
+    public List<String> uploadProductImage(List<MultipartFile> files, Long productId) {
+
+        List<String> productImageName = new ArrayList<>();
 
         for (MultipartFile file : files) {
             if (file.getSize() == 0) continue;
@@ -137,6 +143,7 @@ public class ProductService implements IProductService {
             String uploadedUniqueFileName = null;
             try {
                 uploadedUniqueFileName = storeImage(checkedFile);
+                productImageName.add(uploadedUniqueFileName);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -144,11 +151,12 @@ public class ProductService implements IProductService {
             // save thumbnail of uploaded file into "product_images" table.
             createProductImage(uploadedUniqueFileName, productId);
         }
+        return productImageName;
     }
 
     @Override
     @Transactional
-    public void uploadThumbnail(MultipartFile file, Long productId) {
+    public String uploadThumbnail(MultipartFile file, Long productId) {
         // conditions
         if (file.getSize() ==0) {
             throw new IllegalArgumentException("File is emptied!");
@@ -171,6 +179,8 @@ public class ProductService implements IProductService {
             deleteUploadsFolderStorage(existingProduct.getThumbnail());
         }
         existingProduct.setThumbnail(uniqueThumbnail);
+
+        return uniqueThumbnail;
     }
 
     @Override
@@ -232,7 +242,6 @@ public class ProductService implements IProductService {
     }
 
     private void deleteUploadsFolderStorage(String imageName) {
-
         Path filePath = Paths.get(FOLDER_UPLOADS).resolve(imageName);
         try {
             if (Files.exists(filePath)) {
@@ -241,7 +250,7 @@ public class ProductService implements IProductService {
                 throw new FileNotFoundException("File not found: " + imageName);
             }
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            log.warn(e.getMessage());
         }
     }
 

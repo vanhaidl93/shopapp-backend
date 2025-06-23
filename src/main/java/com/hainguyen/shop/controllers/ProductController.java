@@ -2,14 +2,12 @@ package com.hainguyen.shop.controllers;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.javafaker.Faker;
-import com.hainguyen.shop.dtos.response.ProductsResponsePage;
+import com.hainguyen.shop.dtos.response.*;
 import com.hainguyen.shop.services.IProductRedisService;
 import com.hainguyen.shop.services.IProductRedisTrendingService;
 import com.hainguyen.shop.services.IProductService;
 import com.hainguyen.shop.utils.Constants;
 import com.hainguyen.shop.dtos.request.ProductDto;
-import com.hainguyen.shop.dtos.response.SuccessResponse;
-import com.hainguyen.shop.dtos.response.ProductResponse;
 import com.hainguyen.shop.utils.LocalizationUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +22,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -47,29 +44,27 @@ public class ProductController {
     public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductDto productDto) {
 
         ProductResponse productResponse = productService.createProduct(productDto);
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(productResponse);
     }
 
     @PostMapping(value = "uploads/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<SuccessResponse> uploadProductImages(@RequestParam("files") List<MultipartFile> files,
+    public ResponseEntity<ImageNamesResponse> uploadProductImages(@RequestParam("files") List<MultipartFile> files,
                                                         @PathVariable Long productId){
 
-        productService.uploadProductImage(files, productId);
+        List<String> productImageNames = productService.uploadProductImage(files, productId);
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new SuccessResponse(Constants.STATUS_201,
-                        localizationUtils.getLocalizedMessage(Constants.MESSAGE_201)));
+                .body(ImageNamesResponse.builder().imageNames(productImageNames).build());
     }
 
     @PostMapping(value = "uploads/thumbnail/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<SuccessResponse> uploadThumbnail(@RequestParam("file") MultipartFile file,
-                                                        @PathVariable Long productId) {
+    public ResponseEntity<ImageNameResponse> uploadThumbnail(@RequestParam("file") MultipartFile file,
+                                                             @PathVariable Long productId) {
 
-        productService.uploadThumbnail(file, productId);
+        String thumbnail = productService.uploadThumbnail(file, productId);
 
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(new SuccessResponse(Constants.STATUS_201,
-                        localizationUtils.getLocalizedMessage(Constants.MESSAGE_201)));
+        return ResponseEntity.status(HttpStatus.CREATED).body(ImageNameResponse.builder().imageName(thumbnail).build());
     }
 
     @GetMapping("/images/{imageName}")
@@ -85,7 +80,7 @@ public class ProductController {
                         .body(resource);
             } else {
                 return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG)
-                        .body(new UrlResource(Paths.get("uploads/notfound.jpg").toUri()));
+                        .body(new UrlResource(Paths.get("uploads/notfound.jpeg").toUri()));
             }
         } catch (MalformedURLException e) {
             return ResponseEntity.notFound().build();

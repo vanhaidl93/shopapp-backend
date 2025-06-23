@@ -5,5 +5,5 @@ import com.hainguyen.shop.models.ProductImage;
 
 public interface IProductImageService {
 
-    ProductImage deleteProductImage(Long id);
+    ProductImage deleteProductImage(String productImageName);
 }

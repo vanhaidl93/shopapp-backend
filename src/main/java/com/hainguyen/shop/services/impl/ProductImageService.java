@@ -14,11 +14,11 @@ public class ProductImageService implements IProductImageService {
     private final ProductImageRepo productImageRepository;
 
     @Override
-    public ProductImage deleteProductImage(Long id) {
-        ProductImage productImage = productImageRepository.findById(id)
-                        .orElseThrow(() -> new ResourceNotFoundException("ProductImage","Id",id.toString()));
+    public ProductImage deleteProductImage(String productImageName) {
+        ProductImage productImage = productImageRepository.findByImageName(productImageName)
+                        .orElseThrow(() -> new ResourceNotFoundException("ProductImage","imageName",productImageName));
 
-        productImageRepository.deleteById(id);
+        productImageRepository.delete(productImage);
         return productImage;
     }
 }

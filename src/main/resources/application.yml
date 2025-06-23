@@ -50,8 +50,8 @@ spring:
 
 # jwt
 jwt:
-  expiration: ${JWT_EXP:2592000} #30 days = 30 * 24 * 60 * 60
-  expiration-refresh-token: ${REFRESH_JWT_EXP:5184000} #60 days = 60 * 24 * 60 * 60
+  expiration: ${JWT_EXP:86400} #1 day = 24 * 60 * 60 = 86400
+  expiration-refresh-token: ${REFRESH_JWT_EXP:604800} #7 days = 7 * 24 * 60 * 60
   secretKey: ${JWT_SECRET:jxgEQeXHuPq8VdbyYFNkANdudQ53YUn4}
 
 # prefix for api

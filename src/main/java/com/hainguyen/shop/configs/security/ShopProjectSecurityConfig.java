@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -59,11 +60,11 @@ public class ShopProjectSecurityConfig {
                             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                                 CorsConfiguration config = new CorsConfiguration();
                                 config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
-                                config.setAllowedMethods(Collections.singletonList("*"));
-                                config.setAllowCredentials(true);
+                                config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+                                config.setAllowCredentials(true); // require to allow cookies
                                 config.setAllowedHeaders(List.of("*"));
                                 config.setMaxAge(3600L);
-                                config.setExposedHeaders(List.of("Authorization"));
+                                config.setExposedHeaders(List.of("*"));
                                 return config;
                             }
                         }
@@ -76,6 +77,8 @@ public class ShopProjectSecurityConfig {
                         // user login - register
                         String.format("%s/users/register", apiPrefix),
                         String.format("%s/users/login", apiPrefix),
+                        String.format("%s/users/logout", apiPrefix),
+                        String.format("%s/users/refreshToken", apiPrefix),
                         // enable "/error"
                         "/error",
                         // generate fake products

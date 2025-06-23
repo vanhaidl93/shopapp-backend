@@ -24,4 +24,5 @@ public class UserLoginDto {
     private String password;
 
     private Long roleId;
+    private boolean rememberMe;
 }

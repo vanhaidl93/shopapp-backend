@@ -5,7 +5,8 @@ import com.hainguyen.shop.models.User;
 import org.springframework.security.core.Authentication;
 
 public interface ITokenService {
+    Token findByRefreshToken(String refreshToken);
     Token addToken(User user,String token, boolean isMobile);
-    Token refreshToken(String refreshToken, Authentication authentication);
+    Token refreshToken(String refreshToken);
 
 }
