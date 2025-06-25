@@ -13,7 +13,7 @@ import com.hainguyen.shop.models.User;
 import com.hainguyen.shop.services.ITokenService;
 import com.hainguyen.shop.services.IUserService;
 import com.hainguyen.shop.utils.Constants;
-import com.hainguyen.shop.utils.JwtTokenUtil;
+import com.hainguyen.shop.utils.JwtTokenUtils;
 import com.hainguyen.shop.utils.LocalizationUtils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,7 +42,7 @@ public class UserController {
 
     private final IUserService userService;
     private final LocalizationUtils localizationUtils;
-    private final JwtTokenUtil jwtTokenUtil;
+    private final JwtTokenUtils jwtTokenUtil;
     private final UserMapper userMapper;
     private final ITokenService tokenService;
     private final UserDetailsService userDetailsService;

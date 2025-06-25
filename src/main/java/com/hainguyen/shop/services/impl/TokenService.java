@@ -1,6 +1,6 @@
 package com.hainguyen.shop.services.impl;
 
-import com.hainguyen.shop.utils.JwtTokenUtil;
+import com.hainguyen.shop.utils.JwtTokenUtils;
 import com.hainguyen.shop.exceptions.ResourceNotFoundException;
 import com.hainguyen.shop.models.Token;
 import com.hainguyen.shop.models.User;
@@ -8,7 +8,6 @@ import com.hainguyen.shop.repositories.TokenRepository;
 import com.hainguyen.shop.services.ITokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,7 +25,7 @@ public class TokenService implements ITokenService {
 
     private static final int MAX_TOKENS = 3;
     private final TokenRepository tokenRepository;
-    private final JwtTokenUtil jwtTokenUtil;
+    private final JwtTokenUtils jwtTokenUtil;
     private final UserDetailsService userDetailsService;
 
     @Value("${jwt.expiration}")

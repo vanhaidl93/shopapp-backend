@@ -19,20 +19,24 @@ public class OrderDto {
     private Long userId;
     private String fullName;
     private String email;
-
+    private String address;
     @NotBlank(message = "Phone number is required")
     @Size(min = 5, message = "Phone number must be at least 5 characters")
     private String phoneNumber;
-    private String shippingAddress;
-    private String note;
-    private String status;
 
+    private String status;
+    private String note;
     @Min(value = 0, message = "Total money must be ≥ 0")
     private Float totalMoney;
     private String shippingMethod;
+    private String shippingAddress;
+    private String shippingDate;
     private String paymentMethod;
 
     private String couponCode;
     private List<CartItemDto> cartItems;
+
+    // id from VNPAY.
+    private String vnpTxnRef;
 
 }

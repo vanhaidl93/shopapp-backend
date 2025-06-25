@@ -1,7 +1,7 @@
 package com.hainguyen.shop.services.impl;
 
 import com.hainguyen.shop.dtos.request.UserLoginDto;
-import com.hainguyen.shop.utils.JwtTokenUtil;
+import com.hainguyen.shop.utils.JwtTokenUtils;
 import com.hainguyen.shop.dtos.request.UserDto;
 import com.hainguyen.shop.dtos.request.UserRegister;
 import com.hainguyen.shop.dtos.response.UserResponse;
@@ -23,8 +23,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +36,7 @@ public class UserService implements IUserService {
     private final UserRepo userRepo;
     private final RoleRepo roleRepo;
     private final PasswordEncoder passwordEncoder;
-    private final JwtTokenUtil jwtTokenUtil;
+    private final JwtTokenUtils jwtTokenUtil;
     private final AuthenticationManager authenticationManager;
     private final UserMapper userMapper;
     private final TokenRepository tokenRepository;

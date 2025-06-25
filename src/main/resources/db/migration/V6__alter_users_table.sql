@@ -1,3 +1,4 @@
+-- add vn
 ALTER TABLE users
 ADD COLUMN email VARCHAR(255) DEFAULT '';
 

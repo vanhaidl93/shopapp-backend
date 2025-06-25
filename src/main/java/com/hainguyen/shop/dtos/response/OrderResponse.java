@@ -34,4 +34,6 @@ public class OrderResponse {
 
     private List<OrderDetailResponse> orderDetailsResponse;
 
+    private String vnpTxnRef;
+
 }

@@ -79,6 +79,7 @@ public class ShopProjectSecurityConfig {
                         String.format("%s/users/login", apiPrefix),
                         String.format("%s/users/logout", apiPrefix),
                         String.format("%s/users/refreshToken", apiPrefix),
+                        String.format("%s/payments/**", apiPrefix),
                         // enable "/error"
                         "/error",
                         // generate fake products
@@ -108,7 +109,7 @@ public class ShopProjectSecurityConfig {
 
                 .requestMatchers(GET, String.format("%s/orders/**", apiPrefix)).hasAnyRole(Role.USER,Role.ADMIN)
                 .requestMatchers(POST, String.format("%s/orders", apiPrefix)).hasAnyRole(Role.USER)
-                .requestMatchers(PUT, String.format("%s/orders/**", apiPrefix)).hasRole(Role.ADMIN)
+                .requestMatchers(PUT, String.format("%s/orders/**", apiPrefix)).hasAnyRole(Role.ADMIN,Role.USER)
                 .requestMatchers(DELETE, String.format("%s/orders/**", apiPrefix)).hasRole(Role.ADMIN)
 
                 .requestMatchers(GET, String.format("%s/orderDetails/**", apiPrefix)).hasAnyRole(Role.USER)

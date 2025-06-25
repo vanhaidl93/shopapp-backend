@@ -57,3 +57,37 @@ jwt:
 # prefix for api
 api:
   prefix: /api/v1
+
+# VNPAY
+vnpay:
+  payment-url: "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"
+  transaction-url: "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction"
+  # redirect to paymentCallback - Angular.
+  return-payment-url: "${VNPAY_RETURN_URI:http://localhost:4200/payments/paymentCallback}"
+  # register with arbitrary valid website in VNPAY and get below code.
+  # not shopApp, a personal webside that's deployed and had a ssl certificate, Https://....
+  tmn-code: "HAOYCDK8"
+  secret-key: "AQFI8KD7VVSL68VK677YYSJB2BWKHWUO"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,6 +1,6 @@
 package com.hainguyen.shop.filters;
 
-import com.hainguyen.shop.utils.JwtTokenUtil;
+import com.hainguyen.shop.utils.JwtTokenUtils;
 import com.hainguyen.shop.exceptions.ResourceNotFoundException;
 import com.hainguyen.shop.models.User;
 import com.hainguyen.shop.repositories.UserRepo;
@@ -29,7 +29,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JwtTokenFilter extends OncePerRequestFilter {
 
-    private final JwtTokenUtil jwtTokenUtil;
+    private final JwtTokenUtils jwtTokenUtil;
     private final UserDetailsService userDetailsService;
     private final UserRepo userRepo;
 
@@ -92,11 +92,16 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/roles**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/products**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/categories**", apiPrefix), "GET"),
+
                 Pair.of(String.format("%s/users/register", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/login", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/logout", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/refreshToken", apiPrefix), "POST"),
+
                 Pair.of(String.format("%s/coupons**", apiPrefix), "GET"),
+
+                Pair.of(String.format("%s/payments**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/payments**", apiPrefix), "POST"),
 
                 // Swagger
                 Pair.of("/v3/api-docs**", "GET"),

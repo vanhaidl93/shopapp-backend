@@ -23,31 +23,28 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
-
     @Column(name = "fullname")
     private String fullName;
     private String email;
-
     @Column(nullable = false)
     private String phoneNumber;
-
     @Column(nullable = false)
     private String address;
+
     private String note;
+    private LocalDate orderDate;
+    private String status;
     private Float totalMoney;
     private String shippingMethod;
     private String shippingAddress;
-    private String paymentMethod;
-
-    // Exclude inside OrderDto
-    private LocalDate orderDate;
-    private String status;
     private LocalDate shippingDate;
     private String trackingNumber;
-    private boolean active;
+    private String paymentMethod;
+    private boolean active; // page admin.
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     @JsonManagedReference
@@ -58,7 +55,8 @@ public class Order {
     @JsonBackReference
     private Coupon coupon;
 
-
+    //  id from VNPAY.
+    private String vnpTxnRef; // Order ID của VNPay trả về
 
     public void addOrderDetail(OrderDetail detail) {
         if (orderDetails == null) {

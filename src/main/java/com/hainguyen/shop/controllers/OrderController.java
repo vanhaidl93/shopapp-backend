@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -80,6 +82,26 @@ public class OrderController {
         Boolean isDeleted = orderService.deleteOrder(id);
 
         return localizationUtils.getResponseChangeRecord(isDeleted,Constants.MESSAGE_417_DELETE);
+    }
+
+    @PutMapping("/{vnpTxpRef}/status")
+    public ResponseEntity<SuccessResponse> updateOrderStatus(@PathVariable String vnpTxpRef,
+                                                             @RequestParam String status){
+
+        boolean isUpdated = orderService.updateOrderStatusByVnpTxpRef(vnpTxpRef, status);
+
+        return localizationUtils.getResponseChangeRecord(isUpdated,Constants.MESSAGE_417_UPDATE);
+    }
+
+    @PutMapping("/cancel/{orderId}")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    public ResponseEntity<SuccessResponse> cancelOrder(@PathVariable long orderId){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        boolean cancelOrder = orderService.cancelOrder(orderId,authentication);
+
+        return ResponseEntity.ok()
+                .body(new SuccessResponse(Constants.STATUS_200, localizationUtils.getLocalizedMessage(Constants.MESSAGE_200)));
     }
 
 }
