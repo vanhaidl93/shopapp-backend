@@ -18,8 +18,8 @@ public class UserResponse extends BaseResponse{
     private String address;
     private boolean isActive;
     private Date dateOfBirth;
-    private int facebookAccountId;
-    private int googleAccountId;
+    private String facebookAccountId;
+    private String googleAccountId;
 
     private Long roleId;
 }

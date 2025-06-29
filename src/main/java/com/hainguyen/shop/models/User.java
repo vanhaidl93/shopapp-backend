@@ -32,8 +32,10 @@ public class User extends BaseEntity{
     private String password;
     private boolean isActive;
     private Date dateOfBirth;
-    private int facebookAccountId;
-    private int googleAccountId;
+
+    private String facebookAccountId;
+    private String googleAccountId;
+    private String profileImage;
 
     @ManyToOne
     @JoinColumn(name = "role_id")

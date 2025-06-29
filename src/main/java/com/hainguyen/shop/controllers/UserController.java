@@ -10,6 +10,7 @@ import com.hainguyen.shop.dtos.response.UsersResponsePage;
 import com.hainguyen.shop.mapper.UserMapper;
 import com.hainguyen.shop.models.Token;
 import com.hainguyen.shop.models.User;
+import com.hainguyen.shop.services.ISocialOAuthService;
 import com.hainguyen.shop.services.ITokenService;
 import com.hainguyen.shop.services.IUserService;
 import com.hainguyen.shop.utils.Constants;
@@ -28,11 +29,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -45,7 +47,7 @@ public class UserController {
     private final JwtTokenUtils jwtTokenUtil;
     private final UserMapper userMapper;
     private final ITokenService tokenService;
-    private final UserDetailsService userDetailsService;
+    private final ISocialOAuthService socialOAuthService;
 
     @PostMapping("/register")
     public ResponseEntity<SuccessResponse> createUser(@Valid @RequestBody UserRegister userRegister) {
@@ -186,6 +188,55 @@ public class UserController {
         String message = active > 0 ? "Successfully enabled the user." : "Successfully blocked the user.";
 
         return ResponseEntity.ok().body(message);
+    }
+
+    // SOCIAL LOGIN
+    @GetMapping("/auth/socialLogin")
+    public ResponseEntity<String> socialAuth(@RequestParam("loginType") String loginType,
+                                             HttpServletRequest request) {
+        //request.getRequestURI()
+        loginType = loginType.trim().toLowerCase();
+        String url = socialOAuthService.generateUrlRequireAuthorizationToken(loginType);
+        return ResponseEntity.ok(url);
+    }
+
+    @GetMapping("/auth/social/callback")
+    public ResponseEntity<LoginResponse> callback(@RequestParam("authorizationCode") String authorizationCode,
+                                                  @RequestParam("loginType") String loginType,
+                                                  HttpServletRequest request,
+                                                  HttpServletResponse response) {
+        // authorization + loginType to fetch userInfo
+        Map<String, Object> userInfo = socialOAuthService.
+                exchangeAuthorizationCodeForAccessTokenAndFetchProfile(authorizationCode, loginType);
+        if (userInfo == null) {
+            throw new BadCredentialsException("UnAuthorized!");
+        }
+
+        // map to userLoginDto from UserInfo (social Auth server).
+        UserLoginDto userLoginDto = userMapper.toUserLoginDto(loginType, userInfo);
+
+        // login with userLoginDto, create a bearToken to reuse. (normal jwt token).
+        String bearToken = userService.socialLogin(userLoginDto);
+
+        // token Service, constraint the number of tokens (3) per User.
+        String userAgent = request.getHeader("User-Agent");
+        User existingUser = userService.getUserByToken(bearToken);
+        Token tokenObject = tokenService.addToken(existingUser, bearToken, isMobile(userAgent));
+
+        // Set refresh token as HttpOnly cookie (refresh token functionality)
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", tokenObject.getRefreshToken())
+                .httpOnly(true)
+                .secure(false) // https
+                .path("/api/v1")
+                .maxAge(Duration.ofDays(7).getSeconds())
+                .sameSite("Lax")
+                .build();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+
+        return ResponseEntity.ok().body(
+                userMapper.toLoginResponse(existingUser,
+                        localizationUtils.getLocalizedMessage(Constants.MESSAGE_200), tokenObject));
     }
 
     private boolean isMobile(String userAgent) {

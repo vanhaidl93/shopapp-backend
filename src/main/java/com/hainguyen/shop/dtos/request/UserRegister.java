@@ -42,8 +42,8 @@ public class UserRegister {
     private String address;
     private boolean isActive;
     private Date dateOfBirth;
-    private int facebookAccountId;
-    private int googleAccountId;
+    private String facebookAccountId;
+    private String googleAccountId;
 
     @NotNull(message = "Role ID is required")
     private Long roleId;

@@ -86,14 +86,7 @@ public class TokenService implements ITokenService {
             throw new IllegalArgumentException("Refresh token is expired");
         }
 
-        // session creation policy: stateless, we have to explicitly create an Authentication object per request.
-        UserDetails userDetails = userDetailsService.loadUserByUsername(existingToken.getUser().getPhoneNumber());
-        Authentication authentication= UsernamePasswordAuthenticationToken.authenticated(
-                userDetails.getUsername(),
-                null,
-                userDetails.getAuthorities());
-
-        String newToken = jwtTokenUtil.generateToken(authentication, existingToken.getUser());
+        String newToken = jwtTokenUtil.generateToken(existingToken.getUser());
         existingToken.setExpirationDate(LocalDateTime.now().plusSeconds(jwtExpiration));
         existingToken.setToken(newToken);
 

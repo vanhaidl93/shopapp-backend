@@ -57,23 +57,21 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
             // extract phoneNumber and validate token follow signature - secret.
             String token = authHeader.substring(7);
-            String phoneNumber = jwtTokenUtil.extractPhoneNumber(token);
+            String subject = jwtTokenUtil.extractSubject(token);
 
-            User existingUser = userRepo.findByPhoneNumber(phoneNumber)
-                    .orElseThrow(() -> new ResourceNotFoundException("User","phoneNumber",phoneNumber));
+            User existingUser = userRepo.findByPhoneNumberOrEmail(subject,subject)
+                    .orElseThrow(() -> new ResourceNotFoundException("User","phoneNumber Or Email",subject));
 
             // save SecurityContext if first filter, to retrieve later.
             if (jwtTokenUtil.validateToken(token,existingUser)
                     && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                UserDetails userDetails = userDetailsService.loadUserByUsername(phoneNumber);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(subject);
                 UsernamePasswordAuthenticationToken authenticationToken
                         = UsernamePasswordAuthenticationToken.authenticated(
                         userDetails.getUsername(),
                         null,
                         userDetails.getAuthorities());
-
-                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
@@ -97,7 +95,10 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(String.format("%s/users/login", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/logout", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/refreshToken", apiPrefix), "POST"),
+                Pair.of(String.format("%s/users/auth/socialLogin**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/users/auth/social/callback**", apiPrefix), "GET"),
 
+                Pair.of(String.format("%s/comments**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/coupons**", apiPrefix), "GET"),
 
                 Pair.of(String.format("%s/payments**", apiPrefix), "GET"),
@@ -118,6 +119,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             // Check if the request path and method satisfy the condition.
             if (requestPath.matches(pathBypass.replace("**", ".*"))
                     && requestMethod.equalsIgnoreCase(methodBypass)) {
+
+
                 return true;
             }
         }

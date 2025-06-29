@@ -48,6 +48,26 @@ spring:
     encoding: UTF-8
     default-locale: en
 
+  # OAuth2.
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 119564257566-qjmpshhdei0uiioord9m3mi5bktg92g5.apps.googleusercontent.com
+            client-secret: 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
+            # register a page which google will redirect to, auth.callback component.
+            redirect-uri: "${GOOGLE_REDIRECT_URI:http://localhost:4200/auth/google/callback}"
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+          facebook:
+            client-id: 24244624138502522
+            client-secret: 2715647e4e4cb08299f44992275dcef9
+            # register a page which facebook will redirect to, auth.callback component.
+            redirect-uri: "${FACEBOOK_REDIRECT_URI:http://localhost:4200/auth/facebook/callback}"
+            auth-uri: https://www.facebook.com/v21.0/dialog/oauth
+            token-uri: https://graph.facebook.com/oauth/access_token
+            user-info-uri: https://graph.facebook.com/me?fields=id,name,email,picture.type(large)
+
 # jwt
 jwt:
   expiration: ${JWT_EXP:86400} #1 day = 24 * 60 * 60 = 86400

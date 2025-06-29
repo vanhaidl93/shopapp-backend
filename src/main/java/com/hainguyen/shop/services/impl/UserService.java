@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -66,7 +67,7 @@ public class UserService implements IUserService {
                 .isActive(true)
                 .role(role)
                 .build();
-        if (userRegister.getGoogleAccountId() == 0 && userRegister.getFacebookAccountId() == 0) {
+        if (userRegister.getGoogleAccountId().equals("0")  && userRegister.getFacebookAccountId().equals("0")) {
             String password = userRegister.getPassword();
             String encodedPassword = passwordEncoder.encode(password);
             newUser.setPassword(encodedPassword);
@@ -92,10 +93,48 @@ public class UserService implements IUserService {
         Authentication authenticationRes = authenticationManager.authenticate(authenticationToken);
 
         if (authenticationRes != null && authenticationRes.isAuthenticated()) {
-            jwt = jwtTokenUtil.generateToken(authenticationRes, existingUser);
+            jwt = jwtTokenUtil.generateToken(existingUser);
         }
 
         return jwt;
+    }
+
+    @Override
+    @Transactional
+    public String socialLogin(UserLoginDto userLoginDto) {
+
+        Optional<User> optionalUser;
+        Role roleUser = roleRepo.findByName("ROLE_"+Role.USER)
+                .orElseThrow(() -> new ResourceNotFoundException("Role","name","ROLE_"+Role.USER));
+
+        if (userLoginDto.isGoogleAccountIdValid()) {
+            optionalUser = userRepo.findByGoogleAccountId(userLoginDto.getGoogleAccountId());
+            // save new User into database
+            if (optionalUser.isEmpty()) {
+                User newUser = userMapper.toUser(userLoginDto,roleUser);
+                newUser = userRepo.save(newUser);
+                optionalUser = Optional.of(newUser);
+            }
+        }
+        else if (userLoginDto.isFacebookAccountIdValid()) {
+            optionalUser = userRepo.findByFacebookAccountId(userLoginDto.getFacebookAccountId());
+            // save new User into database
+            if (optionalUser.isEmpty()) {
+                User newUser = userMapper.toUser(userLoginDto,roleUser);
+                newUser = userRepo.save(newUser);
+                optionalUser = Optional.of(newUser);
+            }
+        } else {
+            throw new IllegalArgumentException("Invalid social account information.");
+        }
+
+        User user = optionalUser.get();
+
+        if (!user.isActive()) {
+            throw new BadCredentialsException("User is unAuthorized!");
+        }
+
+        return jwtTokenUtil.generateToken(user);
     }
 
     @Override
@@ -103,10 +142,10 @@ public class UserService implements IUserService {
         if (jwtTokenUtil.isTokenExpired(token)) {
             throw new BadCredentialsException("Unauthorized");
         }
-        String phoneNumber = jwtTokenUtil.extractPhoneNumber(token);
+        String subject = jwtTokenUtil.extractSubject(token);
 
-        return userRepo.findByPhoneNumber(phoneNumber)
-                .orElseThrow(() -> new ResourceNotFoundException("User", "phoneNumber", phoneNumber));
+        return userRepo.findByPhoneNumberOrEmail(subject,subject)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "phoneNumber or email", subject));
     }
 
     @Override
@@ -165,5 +204,7 @@ public class UserService implements IUserService {
         return userRepo.findByPhoneNumber(phoneNumber)
                 .orElseThrow(() -> new ResourceNotFoundException("Use", "phoneNumber", phoneNumber));
     }
+
+
 
 }

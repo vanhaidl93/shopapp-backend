@@ -71,7 +71,6 @@ public class ShopProjectSecurityConfig {
                 )
         );
 
-
         http.authorizeHttpRequests(req -> req
                 .requestMatchers(
                         // user login - register
@@ -79,6 +78,7 @@ public class ShopProjectSecurityConfig {
                         String.format("%s/users/login", apiPrefix),
                         String.format("%s/users/logout", apiPrefix),
                         String.format("%s/users/refreshToken", apiPrefix),
+                        String.format("%s/users/auth/**", apiPrefix),
                         String.format("%s/payments/**", apiPrefix),
                         // enable "/error"
                         "/error",

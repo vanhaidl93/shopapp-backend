@@ -10,40 +10,43 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.stream.Collectors;
 
 
 @Component
 @RequiredArgsConstructor
 public class JwtTokenUtils {
 
-    private final Environment env;
     @Value("${jwt.secretKey}")
     private String secret;
     @Value("${jwt.expiration}")
     private long EXPIRATION_TOKEN;
+
     private final TokenRepository tokenRepository;
 
-    public String generateToken(Authentication
-                                         authentication, User user) {
+    public String generateToken(User user) {
 
         return Jwts.builder()
-                .claim("phoneNumber", authentication.getName())
+                .claim("subject", chooseClaimForToken(user))
                 .claim("userId",user.getId().toString())
-                .claim("authorities", authentication.getAuthorities().stream()
-                        .map(GrantedAuthority::getAuthority)
-                        .collect(Collectors.joining(",")))
                 .subject("JWT-TOKEN")
                 .expiration(new Date(new Date().getTime() + EXPIRATION_TOKEN*1000)) // milliseconds
                 .signWith(getSecretKey())
                 .compact();
+    }
+
+    private String chooseClaimForToken(User user){
+        // normal login.
+        String claimSubject = user.getPhoneNumber();
+        if (claimSubject == null || claimSubject.isBlank()) {
+            // social login
+            claimSubject = user.getEmail();
+        }
+        return claimSubject;
     }
 
     private SecretKey getSecretKey() {
@@ -64,8 +67,8 @@ public class JwtTokenUtils {
         return expiration.before(new Date());
     }
 
-    public String extractPhoneNumber(String token) {
-        return String.valueOf(this.parseClaimsToken(token).get("phoneNumber"));
+    public String extractSubject(String token) {
+        return String.valueOf(this.parseClaimsToken(token).get("subject"));
     }
 
     public Long extractUserId(String token) {
@@ -88,10 +91,5 @@ public class JwtTokenUtils {
         }
         return true;
     }
-
-
-
-
-
 
 }

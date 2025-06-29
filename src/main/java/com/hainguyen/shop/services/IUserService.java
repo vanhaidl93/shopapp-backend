@@ -12,6 +12,8 @@ public interface IUserService {
 
     String login(UserLoginDto userLoginDto);
 
+    String socialLogin(UserLoginDto userLoginDto);
+
     User getUserByToken(String token);
 
     boolean updateUser(Long userId, UserDto userDto);

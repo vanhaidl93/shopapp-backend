@@ -22,4 +22,7 @@ public interface UserRepo extends JpaRepository<User,Long> {
             "OR u.phoneNumber LIKE %:keyword%) " +
             "AND u.role.name = 'ROLE_USER'")
     Page<User> getAllUsersPerPageIncludeSearchKeyword(String keyword, Pageable pageable);
+
+    Optional<User> findByGoogleAccountId(String id);
+    Optional<User> findByFacebookAccountId(String id);
 }
