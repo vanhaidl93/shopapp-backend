@@ -80,7 +80,7 @@ public class ShopProjectSecurityConfig {
                         String.format("%s/users/refreshToken", apiPrefix),
                         String.format("%s/users/auth/**", apiPrefix),
                         String.format("%s/payments/**", apiPrefix),
-                        // enable "/error"
+                        // security context error.
                         "/error",
                         // generate fake products
                         String.format("%s/products/generateFakeProducts", apiPrefix),
@@ -116,6 +116,8 @@ public class ShopProjectSecurityConfig {
                 .requestMatchers(POST, String.format("%s/orderDetails/**", apiPrefix)).hasAnyRole(Role.USER)
                 .requestMatchers(PUT, String.format("%s/orderDetails/**", apiPrefix)).hasRole(Role.ADMIN)
                 .requestMatchers(DELETE, String.format("%s/orderDetails/**", apiPrefix)).hasRole(Role.ADMIN)
+
+                .requestMatchers(GET, String.format("%s/actuator/**", apiPrefix)).hasRole(Role.ADMIN)
 
                 .anyRequest().authenticated()
         );

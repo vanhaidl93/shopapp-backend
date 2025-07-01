@@ -1,4 +1,0 @@
-
-
-ALTER TABLE shopapp.tokens
-ADD COLUMN IF NOT EXISTS is_mobile TINYINT(1) DEFAULT 0;

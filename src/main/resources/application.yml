@@ -4,10 +4,12 @@ server:
 spring:
   # regarding to mysql database configurations
   datasource:
-    url: jdbc:mysql://localhost:3306/shopapp?useSSL=false&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3307/shopapp?useSSL=false&serverTimezone=UTC
+    #url: jdbc:mysql://localhost:3306/shopapp?useSSL=false&serverTimezone=UTC #localhost
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password:
+    #password:      #localhost
+    password: ${MYSQL_ROOT_PASSWORD:Test@abc}
   jpa:
     hibernate:
       ddl-auto: none
@@ -89,7 +91,16 @@ vnpay:
   tmn-code: "HAOYCDK8"
   secret-key: "AQFI8KD7VVSL68VK677YYSJB2BWKHWUO"
 
-
+# healthcheck
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      base-path: /api/v1/actuator
+      exposure:
+        include: "health, info"
 
 
 

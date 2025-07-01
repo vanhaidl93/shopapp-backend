@@ -6,3 +6,9 @@ DROP FOREIGN KEY products_ibfk_1;
 ALTER TABLE products
 ADD CONSTRAINT products_ibfk_1 FOREIGN KEY (category_id) REFERENCES categories(id)
 ON DELETE SET NULL;
+
+ALTER TABLE products
+MODIFY thumbnail VARCHAR(255),
+MODIFY price DECIMAL(10,2);
+
+

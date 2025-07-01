@@ -1,0 +1,1324 @@
+{
+	"info": {
+		"_postman_id": "e0d9f541-de5d-4376-a0bb-06b620ffc01d",
+		"name": "ShopApp",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32322917"
+	},
+	"item": [
+		{
+			"name": "categories",
+			"item": [
+				{
+					"name": "createCategorie",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6IjA5MTIzNDU2NzkiLCJ1c2VySWQiOiIyIiwiYXV0aG9yaXRpZXMiOiJST0xFX0FETUlOIiwic3ViIjoiSldULVRPS0VOIiwiZXhwIjoxNzUyMzg5NzU3fQ.anrI_d4cGqfJVyFVYyFvbxVoVR2fJY_5KJ0eNNPHgxk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Mỹ phẩm\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/categories",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllCategory",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/categories",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateCategory",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6IjA5MTIzNDU2NzkiLCJ1c2VySWQiOiIyIiwiYXV0aG9yaXRpZXMiOiJST0xFX0FETUlOIiwic3ViIjoiSldULVRPS0VOIiwiZXhwIjoxNzUyOTgyMTM3fQ.sJM5LK0qSDu5xAMT1HcP9vyeVuOQRUTrN4WQq3d6Bqg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Đồ Điện Tử\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/categories/2",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"categories",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteCategory",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6IjA5MTIzNDU2NzkiLCJ1c2VySWQiOiIyIiwiYXV0aG9yaXRpZXMiOiJST0xFX0FETUlOIiwic3ViIjoiSldULVRPS0VOIiwiZXhwIjoxNzUzMDA0OTI1fQ.lCzFpgSNF9fF7J4Gqgw88H7lTWR0bnQCdxLMdPpuMKw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/categories/2",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"categories",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "products",
+			"item": [
+				{
+					"name": "uploadProductImageByProductId",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6IjA5MTIzNDU2NzkiLCJzdWIiOiJKV1QtVE9LRU4iLCJleHAiOjE3MzYwOTQxNzl9.jSevLZzqT29DGtK0PyPbbt1ZDCGtLZN8cXRiSx6YMnI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "files",
+									"type": "file",
+									"src": [
+										"/D:/2.E-EUPDATE/19.DEV/HTML-CSS/advanced-css-course-master/Natours/starter/img/nat-2.jpg",
+										"/D:/2.E-EUPDATE/19.DEV/HTML-CSS/advanced-css-course-master/Natours/starter/img/nat-7.jpg",
+										"/D:/2.E-EUPDATE/19.DEV/HTML-CSS/advanced-css-course-master/Natours/starter/img/nat-8.jpg",
+										"/D:/2.E-EUPDATE/19.DEV/HTML-CSS/advanced-css-course-master/Natours/starter/img/nat-9.jpg",
+										"/D:/2.E-EUPDATE/19.DEV/HTML-CSS/advanced-css-course-master/Natours/starter/img/nat-10.jpg"
+									]
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/products/uploads/53",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"products",
+								"uploads",
+								"53"
+							],
+							"query": [
+								{
+									"key": "files",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createProduct",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6IjA5MTIzNDU2NzkiLCJzdWIiOiJKV1QtVE9LRU4iLCJleHAiOjE3MzYwOTQxNzl9.jSevLZzqT29DGtK0PyPbbt1ZDCGtLZN8cXRiSx6YMnI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"macbook air 15 inch 2023\",\r\n    \"price\": 812.34,\r\n    \"description\":\"This is a test product\",\r\n    \"categoryId\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/products",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getProductsPerPageAndSearch",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/products?pageNumber=1&pageSize=10&keyword=&categoryId=",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "pageNumber",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								},
+								{
+									"key": "keyword",
+									"value": ""
+								},
+								{
+									"key": "categoryId",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "generateFakeProducts",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6IjA5MTIzNDU2NzkiLCJ1c2VySWQiOiIyIiwic3ViIjoiSldULVRPS0VOIiwiZXhwIjoxNzQwNTgyMDAyfQ.LxyitjcQJXvqb1HHELtgxwiY6fjqocsouWva_6aGxYQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/products/generateFakeProducts",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"products",
+								"generateFakeProducts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getProductById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/products/1",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"products",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateProductById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6IjA5MTIzNDU2NzkiLCJ1c2VySWQiOiIyIiwic3ViIjoiSldULVRPS0VOIiwiZXhwIjoxNzUxMDkwMjA1fQ.NOY9UgHJpk5v1Lclk1_WAeao5vQECUgmSSQJEnlMLaY",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"macbook air 15 inch 2025\",\r\n    \"price\": 812.33,\r\n    \"description\":\"This is a test product\",\r\n    \"categoryId\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/products/1",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"products",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteProductById",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/products/1",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"products",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetProductImagesByImagesName",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/products/images/0ec2eeec-904e-411f-bac7-218cdad274a6_favicon.png",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"products",
+								"images",
+								"0ec2eeec-904e-411f-bac7-218cdad274a6_favicon.png"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getProductsByCartProductIds",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/products/cartProductIds?cartProductIds=1,2,5",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"products",
+								"cartProductIds"
+							],
+							"query": [
+								{
+									"key": "cartProductIds",
+									"value": "1,2,5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "top5ProductsTrending",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6IjA5MTIzNDU2NzkiLCJ1c2VySWQiOiIyIiwiYXV0aG9yaXRpZXMiOiJST0xFX0FETUlOIiwic3ViIjoiSldULVRPS0VOIiwiZXhwIjoxNzUyMjI0NjQ3fQ.5AYMVbP8WYMwExKIYBwEinQ9YuVTB7hkOTsEcUqdDMc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/products/trending",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"products",
+								"trending"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "orders",
+			"item": [
+				{
+					"name": "createOrders",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6IjA5MTIzNDU2NzYiLCJ1c2VySWQiOiI2IiwiYXV0aG9yaXRpZXMiOiJST0xFX1VTRVIiLCJzdWIiOiJKV1QtVE9LRU4iLCJleHAiOjE3NTA5MjU4MzF9.FzZMSpUqCP-NrqHP5knz-bJEFXvKDPGmQgtLN87Djs0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\r\n{\r\n\"couponCode\": \"\",\r\n\"email\": \"happy@example.com\",\r\n\"fullName\": \"Happy Nguyen\",\r\n\"note\": \"ds\",\r\n\"paymentMethod\": \"vnpay\",\r\n\"phoneNumber\": \"0912345677\",\r\n\"shippingAddress\": \"Ho Chi Minh\",\r\n\"shippingMethod\": \"express\",\r\n\"status\": \"pending\",\r\n\"totalMoney\": 228,\r\n\"userId\": 7,\r\n\"vnpTxnRef\": \"61800150\",\r\n\"cartItems\":[\r\n        {\r\n            \"productId\":9,\r\n            \"quantity\":3\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/orders",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getOderById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/orders/23",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"orders",
+								"23"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateOrderById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\":2,\r\n    \"fullName\": \"Happy Nguyen\",\r\n    \"email\": \"test@gmail.com\",\r\n    \"phoneNumber\":\"0912345678\",\r\n    \"shippingAddress\":\"Hẻm A, Đường B, Q10\",\r\n    \"note\": \"Fragile Good\",\r\n    \"totalMoney\": 123.45,\r\n    \"shippingMethod\": \"express\",\r\n    \"paymentMethod\": \"cod\",\r\n    \"cartItems\":[\r\n        {\r\n            \"productId\":1,\r\n            \"quantity\":3\r\n        },\r\n        {\r\n            \"productId\": 9,\r\n            \"quantity\": 4\r\n        }\r\n    ]\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/orders/43",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"orders",
+								"43"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getListOrdersByUserId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/orders/user/2",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"orders",
+								"user",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteOrderById",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/orders/1",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"orders",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getOrdersResponsePage",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6IjA5MTIzNDU2NzkiLCJ1c2VySWQiOiIyIiwic3ViIjoiSldULVRPS0VOIiwiZXhwIjoxNzQwNTgyMDAyfQ.LxyitjcQJXvqb1HHELtgxwiY6fjqocsouWva_6aGxYQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/orders/search-keyword?pageNumber=1&pageSize=10&keyword",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"orders",
+								"search-keyword"
+							],
+							"query": [
+								{
+									"key": "pageNumber",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								},
+								{
+									"key": "keyword",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateStatusByVnTnpRef",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6IjA5MTIzNDU2NzYiLCJ1c2VySWQiOiI2IiwiYXV0aG9yaXRpZXMiOiJST0xFX1VTRVIiLCJzdWIiOiJKV1QtVE9LRU4iLCJleHAiOjE3NTA5MjU4MzF9.FzZMSpUqCP-NrqHP5knz-bJEFXvKDPGmQgtLN87Djs0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\":7,\r\n    \"fullName\": \"John Fancy\",\r\n    \"email\": \"test@gmail.com\",\r\n    \"phoneNumber\":\"0912345677\",\r\n    \"shippingAddress\":\"Hẻm A, Đường B, Q10\",\r\n    \"note\": \"Fragile Good\",\r\n    \"totalMoney\": 123.45,\r\n    \"shippingMethod\": \"express\",\r\n    \"paymentMethod\": \"cod\",\r\n    \"cartItems\":[\r\n        {\r\n            \"productId\":3,\r\n            \"quantity\":3\r\n        },\r\n        {\r\n            \"productId\": 5,\r\n            \"quantity\": 2\r\n        }\r\n    ]\r\n\r\n}"
+						},
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/orders//status",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"orders",
+								"",
+								"status"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "registerUser",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fullName\": \"User 03\",\r\n    \"phoneNumber\": \"0912345677\",\r\n    \"address\": \"Hẻm A, Đường B, Q10\",\r\n    \"password\": \"test@12345\",\r\n    \"retryPassword\": \"test@12345\",\r\n    \"facebookAccountId\": 0,\r\n    \"googleAccountId\": 0,\r\n    \"roleId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/users/register",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"users",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "user_Login",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "vi",
+								"type": "text"
+							},
+							{
+								"key": "User-Agent",
+								"value": "mobile",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phoneNumber\": \"0912345676\",\r\n    \"password\": \"test@12345\",\r\n    \"roleId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/users/login",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetUserByBearertoken",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6IjA5MTIzNDU2NzkiLCJ1c2VySWQiOiIyIiwiYXV0aG9yaXRpZXMiOiJST0xFX0FETUlOIiwic3ViIjoiSldULVRPS0VOIiwiZXhwIjoxNzUyMjI0NjQ3fQ.5AYMVbP8WYMwExKIYBwEinQ9YuVTB7hkOTsEcUqdDMc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/users/details",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"users",
+								"details"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updatePersonalInfo",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6IjA5MTIzNDU2NzYiLCJ1c2VySWQiOiI2IiwiYXV0aG9yaXRpZXMiOiJST0xFX1VTRVIiLCJzdWIiOiJKV1QtVE9LRU4iLCJleHAiOjE3NTIyMzk5OTl9.GO9Kw7GQAoFOwgMwm5U5AudUtP-XX2J6oVa5nHR3ObI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fullName\": \"Happy Nguyen\",\r\n    \"phoneNumber\": \"0912345676\",\r\n    \"address\": \"Ho Chi Minh\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/users/6",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"users",
+								"6"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "admin_Login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phoneNumber\": \"0912345679\",\r\n    \"password\": \"test@12345\",\r\n    \"roleId\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/users/login",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "refreshToken",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/users/refreshToken",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"users",
+								"refreshToken"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "admin_GetUsersPerPageIncludeKeyword",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6IjA5MTIzNDU2NzkiLCJ1c2VySWQiOiIyIiwiYXV0aG9yaXRpZXMiOiJST0xFX0FETUlOIiwic3ViIjoiSldULVRPS0VOIiwiZXhwIjoxNzUyNTY0NjkzfQ.wowdsyT06IvuBTOecr_mnkCpaTdKCtITljFKIknOJoI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/users?pageNumber=1&pageSize=10&keyword",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "pageNumber",
+									"value": "1"
+								},
+								{
+									"key": "pageSize",
+									"value": "10"
+								},
+								{
+									"key": "keyword",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "admin_ResetPassword",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6IjA5MTIzNDU2NzkiLCJ1c2VySWQiOiIyIiwiYXV0aG9yaXRpZXMiOiJST0xFX0FETUlOIiwic3ViIjoiSldULVRPS0VOIiwiZXhwIjoxNzUyMzkxNTI5fQ.sazIvf-GRQXV4pbw7-zkC1P9Ef6aFlF2tY315Xkv7FM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/users/resetPassword/7",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"users",
+								"resetPassword",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "admin_BlockOrEnableUser",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6IjA5MTIzNDU2NzkiLCJ1c2VySWQiOiIyIiwiYXV0aG9yaXRpZXMiOiJST0xFX0FETUlOIiwic3ViIjoiSldULVRPS0VOIiwiZXhwIjoxNzUyNDAwNDY4fQ.S1FtCsT4dq9nGxpw74GA4bAVQPA_DsD4360FTbny2yI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phoneNumber\": \"0912345679\",\r\n    \"password\": \"test@12345\",\r\n    \"roleId\": 2\r\n}"
+						},
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/users/blockOrEnableUser/7/1",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"users",
+								"blockOrEnableUser",
+								"7",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "order_details",
+			"item": [
+				{
+					"name": "createOrderDetail",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"orderId\": 5,\r\n    \"productId\": 1,    \r\n    \"price\": 12.33,\r\n    \"numberOfProducts\": 2,    \r\n    \"totalMoney\": 123.45,\r\n    \"color\": \"#ff00ff\"    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/orderDetails",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"orderDetails"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateOrderDetailsById",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"orderId\": 5,\r\n    \"productId\": 1,\r\n    \"price\": 12.33,\r\n    \"numberOfProducts\": 2,    \r\n    \"totalMoney\": 123.45,\r\n    \"color\": \"#ff00ff\"    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/orderDetails/2",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"orderDetails",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getOrderDetailById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/orderDetails/2",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"orderDetails",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getListOderDetailsByOrderId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/orderDetails/order/23",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"orderDetails",
+								"order",
+								"23"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteOrderDetailsById",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/orderDetails/2",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"orderDetails",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "roles",
+			"item": [
+				{
+					"name": "getRoles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/roles",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"roles"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "comments",
+			"item": [
+				{
+					"name": "getAllComment",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6IjA5MTIzNDU2NzciLCJ1c2VySWQiOiI3IiwiYXV0aG9yaXRpZXMiOiJST0xFX1VTRVIiLCJzdWIiOiJKV1QtVE9LRU4iLCJleHAiOjE3NTI0MDE2MzB9.VIG2voLjw2i55ZPfQIFtHysoCcYAMBe-l7R48XDRxd4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/comments?userId=&productId=1",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"comments"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": ""
+								},
+								{
+									"key": "productId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createAComment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6IjA5MTIzNDU2NzYiLCJ1c2VySWQiOiI2IiwiYXV0aG9yaXRpZXMiOiJST0xFX1VTRVIiLCJzdWIiOiJKV1QtVE9LRU4iLCJleHAiOjE3NTI0MjAyODN9.CfuKEIWOEw3TSAAibkrK_qinGMlRfyGUzRCACnqY6uw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "en",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"productId\": 1,\r\n    \"userId\": 6,\r\n    \"content\": \"I'm comfortable for this product\"\r\n   \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/comments",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateComment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6IjA5MTIzNDU2NzciLCJ1c2VySWQiOiI3IiwiYXV0aG9yaXRpZXMiOiJST0xFX1VTRVIiLCJzdWIiOiJKV1QtVE9LRU4iLCJleHAiOjE3NTI0MTk5ODh9.3caCihGsLvjJT8qBDc4gIsC4tt2Z-4LnYcP6XbUQrtI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"productId\": 2,\r\n    \"userId\": 7,\r\n    \"content\": \"This is bad product, I don't recommend to buy it!\"\r\n   \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/comments/1",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"comments",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "coupons",
+			"item": [
+				{
+					"name": "calculateCoupons",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/coupons/calculate?couponCode=HEAVEN&totalAmount=120",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"coupons",
+								"calculate"
+							],
+							"query": [
+								{
+									"key": "couponCode",
+									"value": "HEAVEN"
+								},
+								{
+									"key": "totalAmount",
+									"value": "120"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "healthcheck",
+			"item": [
+				{
+					"name": "admin-healthcheck",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWJqZWN0IjoiMDkxMjM0NTY3OSIsInVzZXJJZCI6IjIiLCJzdWIiOiJKV1QtVE9LRU4iLCJleHAiOjE3NTEzNDI0NTV9.EAb0Z21P9DRjAI21p8xK2wV7eRxLIb1kGFzOW0Bs_ks",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX_SHOPAPP}}/actuator/health",
+							"host": [
+								"{{API_PREFIX_SHOPAPP}}"
+							],
+							"path": [
+								"actuator",
+								"health"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

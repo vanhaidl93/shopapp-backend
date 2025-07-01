@@ -48,7 +48,7 @@ public class OrderService implements IOrderService {
         newOrder.setShippingDate(newOrder.getOrderDate().plusDays(3));
         newOrder.setActive(true);
         newOrder.setShippingAddress(orderDto.getShippingAddress());
-        newOrder.setAddress(existingUser.getAddress());
+        newOrder.setAddress(existingUser.getAddress()!=null ? existingUser.getAddress() : "");
         newOrder.setVnpTxnRef(orderDto.getVnpTxnRef());
 
         // Map CartItemsDto to OrderDetail and save database (include Order)
